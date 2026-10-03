@@ -11,7 +11,7 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import matter from 'gray-matter';
 import * as yaml from 'js-yaml';
-import katex from 'katex';
+import { katex } from '../site/lib/katex.mjs';
 import { unified } from 'unified';
 import remarkParse from 'remark-parse';
 import remarkGfm from 'remark-gfm';
@@ -106,6 +106,15 @@ function checkFile(file, glossaryKeys) {
       report('error', file, 1, `front matter slide=${data.slide} but file name says ${n}`);
     }
   }
+
+  // A "[" or "]" inside a box label (e.g. an interval $[0,1)$) ends the label early
+  // and silently breaks the directive, so reject it before parsing.
+  content.split('\n').forEach((text, i) => {
+    const label = text.match(/^:{3,}[a-z]+\[(.*)\]\s*(\{.*\})?\s*$/);
+    if (label && /[[\]]/.test(label[1])) {
+      report('error', file, i + 1 + offset, 'box label contains "[" or "]" — move intervals or brackets into the box body');
+    }
+  });
 
   const tree = unified().use(remarkParse).use(remarkGfm).use(remarkMath).use(remarkDirective)
     .parse(content);

@@ -4,7 +4,7 @@ import {
   C, s, h, makeSvg, arrowMarker, segmented, selectBox, statusPanel, skeleton,
 } from './_shared.js';
 
-const ITEMS = [
+const DEFAULT_ITEMS = [
   { k: 'a', name: '苹果' },
   { k: 'b', name: '香蕉' },
   { k: 'c', name: '橙子' },
@@ -15,14 +15,18 @@ const PRESETS = {
   cycle: ['gt', 'lt', 'gt'],
   incomplete: ['gt', 'na', 'gt'],
 };
-const POS = [[180, 52], [62, 238], [298, 238]];
-const R = 34;
+const POS = [[180, 54], [66, 236], [294, 236]];
+const R = 38;
+const STATES = ['gt', 'eq', 'lt', 'na'];
 
-const nm = (i) => `${ITEMS[i].name} <i class="w-var">${ITEMS[i].k}</i>`;
-const v = (i) => `<i class="w-var">${ITEMS[i].k}</i>`;
-
-export function mount(stage) {
-  const state = [...PRESETS.rational];
+// opts.items: three { k, name } to relabel the options (e.g. page 4 uses x, y, z);
+// opts.state: initial answers for the pairs (1st,2nd), (1st,3rd), (2nd,3rd).
+export function mount(stage, opts = {}) {
+  const ITEMS = Array.isArray(opts.items) && opts.items.length === 3 ? opts.items : DEFAULT_ITEMS;
+  const nm = (i) => `${ITEMS[i].name} <i class="w-var">${ITEMS[i].k}</i>`;
+  const v = (i) => `<i class="w-var">${ITEMS[i].k}</i>`;
+  const initial = Array.isArray(opts.state) && opts.state.every((x) => STATES.includes(x)) ? opts.state : PRESETS.rational;
+  const state = [...initial];
   const { plot, side } = skeleton(stage);
 
   const svg = makeSvg(360, 300, '三种水果之间的偏好关系图');
@@ -46,7 +50,7 @@ export function mount(stage) {
     ['rational', '理性的例子'],
     ['cycle', '循环（石头剪刀布）'],
     ['incomplete', '说不出（不完备）'],
-  ], 'rational', (p) => {
+  ], initial === PRESETS.rational ? 'rational' : null, (p) => {
     PRESETS[p].forEach((val, i) => { state[i] = val; selects[i].set(val); });
     update();
   }, '预设');

@@ -22,6 +22,7 @@ import remarkRehype from 'remark-rehype';
 import rehypeRaw from 'rehype-raw';
 import rehypeKatex from 'rehype-katex';
 import rehypeStringify from 'rehype-stringify';
+import { katexDistDir } from './lib/katex.mjs';
 import { visit } from 'unist-util-visit';
 import { toString as hastToString } from 'hast-util-to-string';
 import {
@@ -465,11 +466,10 @@ async function main() {
   // Static assets.
   cpSync(path.join(ROOT, 'public'), DIST, { recursive: true });
   cpSync(path.join(ROOT, 'site/assets'), path.join(DIST, 'assets'), { recursive: true });
-  const katexDist = path.join(ROOT, 'node_modules/katex/dist');
   mkdirSync(path.join(DIST, 'assets/katex/fonts'), { recursive: true });
-  cpSync(path.join(katexDist, 'katex.min.css'), path.join(DIST, 'assets/katex/katex.min.css'));
-  for (const f of readdirSync(path.join(katexDist, 'fonts')).filter((n) => n.endsWith('.woff2'))) {
-    cpSync(path.join(katexDist, 'fonts', f), path.join(DIST, 'assets/katex/fonts', f));
+  cpSync(path.join(katexDistDir, 'katex.min.css'), path.join(DIST, 'assets/katex/katex.min.css'));
+  for (const f of readdirSync(path.join(katexDistDir, 'fonts')).filter((n) => n.endsWith('.woff2'))) {
+    cpSync(path.join(katexDistDir, 'fonts', f), path.join(DIST, 'assets/katex/fonts', f));
   }
   for (const f of ['css/site.css', 'css/widgets.css', 'js/site.js']) {
     if (!existsSync(path.join(DIST, 'assets', f))) writeFileSync(path.join(DIST, 'assets', f), '');
