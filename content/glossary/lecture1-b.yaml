@@ -1,0 +1,47 @@
+- k: revealed-preference
+  zh: 显示偏好
+  en: Revealed preference
+  short: '从观察到的选择反推偏好的思路：$y$ 也能选、他却选了 $x$，就“显示”出他认为 $x$ 至少和 $y$ 一样好。'
+  where: lecture1#p08
+
+- k: rationalize
+  zh: 合理化
+  en: Rationalize
+  short: '找到一个完备、传递的偏好 $\succeq$，使得“按它选”恰好得到观察到的选择，即 $C(\cdot)=C(\cdot;\succeq)$。这里不是“找借口”的意思。'
+  where: lecture1#p08
+
+- k: choice-function
+  zh: 选择规则（作为原始对象）
+  en: Choice rule / choice function (as primitive)
+  short: '函数 $C:\mathcal{B}\to\mathcal{B}$：对每一份菜单 $B$，给出被选中的选项组成的集合 $C(B)\subseteq B$。它直接来自观察，不预先假设背后有偏好。'
+  where: lecture1#p09
+
+- k: harp
+  zh: HARP（Houthakker 显示偏好公理）
+  en: "Houthakker's Axiom of Revealed Preference (HARP)"
+  short: '若 $x,y\in A\cap B$，$x\in C(A)$，$y\in C(B)$，则 $x\in C(B)$ 且 $y\in C(A)$。命题 2：非空的选择规则能被理性偏好解释，当且仅当它满足 HARP。'
+  where: lecture1#p09
+
+- k: testable-prediction
+  zh: 可检验的预测
+  en: Testable prediction (testable restriction)
+  short: '理论对可观察数据提出的限制：只要数据违反它，就能否定这个理论。HARP 就是“理性选择”对选择数据的可检验预测。'
+  where: lecture1#p10
+
+- k: revealed-preference-relation
+  zh: 显示偏好关系
+  en: Revealed preference relation
+  short: '$x\succeq_c y$：存在某个菜单 $A$，$y\in A$ 且 $x\in C(A)$，即“$y$ 摆在面前时，$x$ 曾被选中过”。下标 $c$ 表示它由选择 $C$ 得出。'
+  where: lecture1#p11
+
+- k: warp
+  zh: WARP（弱显示偏好公理）
+  en: Weak Axiom of Revealed Preference (WARP)
+  short: '只在观察到的菜单上检查：若 $x$ 曾在有 $y$ 的菜单上被选中，那么在任何同时含 $x$、$y$ 且 $y$ 被选中的菜单上，$x$ 也必须被选中。数据不全时，它不足以保证选择能被理性偏好解释。'
+  where: lecture1#p13
+
+- k: budget-set
+  zh: 预算集
+  en: Budget set
+  short: '在给定价格和收入下买得起的全部商品组合，例如两种商品时为 $\{x\in\R^2_+\mid p_1x_1+p_2x_2\le w\}$。现实数据通常只能看到人们在预算集上的选择。'
+  where: lecture1#p13

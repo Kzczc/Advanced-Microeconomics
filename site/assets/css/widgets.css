@@ -1,0 +1,106 @@
+/* ==================================================================
+   交互组件样式（所有类名以 w- 开头）
+   颜色与字体沿用 site.css 的变量；单独预览时用回退值。
+   ================================================================== */
+
+.widget-stage { container-type: inline-size; }
+
+.w-root {
+  font-family: var(--font-body, "Times New Roman", "Songti SC", "SimSun", serif);
+  color: var(--ink, #1d2433);
+  font-size: 0.95rem;
+  line-height: 1.7;
+}
+.w-title { font-weight: 700; margin: 0 0 8px; }
+
+.w-grid { display: grid; gap: 14px; grid-template-columns: minmax(0, 1fr); }
+@container (min-width: 760px) {
+  .w-grid { grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr); align-items: start; }
+}
+.w-plot { min-width: 0; }
+.w-side { min-width: 0; display: flex; flex-direction: column; gap: 10px; }
+
+.w-svg {
+  display: block; width: 100%; height: auto; max-height: 460px;
+  background: #fffefb; border: 1px solid var(--line, #e3dfd6); border-radius: 8px;
+  user-select: none; -webkit-user-select: none;
+}
+.w-svg text { font-family: inherit; fill: var(--ink, #1d2433); font-size: 14px; }
+.w-svg .w-tick { fill: var(--muted, #8a90a0); font-size: 11.5px; }
+.w-svg .w-axis-label { fill: var(--ink-2, #4a5263); font-size: 14px; }
+.w-svg .w-small { font-size: 12px; fill: var(--ink-2, #4a5263); }
+.w-var, .w-svg .w-var { font-style: italic; font-family: "Times New Roman", Times, "Nimbus Roman", serif; }
+
+.w-handle { cursor: grab; touch-action: none; }
+.w-handle.is-dragging { cursor: grabbing; }
+.w-point-label { font-weight: 700; font-size: 14px; paint-order: stroke; stroke: #fffefb; stroke-width: 4px; }
+
+/* 控件 */
+.w-controls { display: flex; flex-wrap: wrap; gap: 8px 12px; align-items: center; }
+.w-seg { display: inline-flex; flex-wrap: wrap; gap: 4px; }
+.w-btn {
+  font: inherit; font-size: 0.88rem; line-height: 1.3; cursor: pointer;
+  padding: 5px 11px; border-radius: 6px;
+  color: var(--ink-2, #4a5263); background: #fff; border: 1px solid var(--line-2, #d4cec2);
+}
+.w-btn:hover { border-color: var(--accent, #1f4e8c); color: var(--accent, #1f4e8c); }
+.w-btn[aria-pressed="true"] { color: #fff; background: var(--accent, #1f4e8c); border-color: var(--accent, #1f4e8c); }
+.w-btn.is-preset { font-size: 0.84rem; }
+
+.w-field { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 8px; font-size: 0.9rem; }
+.w-field-label { color: var(--ink-2, #4a5263); }
+.w-select {
+  font: inherit; font-size: 0.9rem; padding: 4px 8px; border-radius: 6px;
+  border: 1px solid var(--line-2, #d4cec2); background: #fff; color: var(--ink, #1d2433);
+}
+.w-field-range { width: 100%; }
+.w-range { flex: 1 1 160px; accent-color: var(--accent, #1f4e8c); min-width: 120px; }
+.w-range-value {
+  min-width: 3.4em; text-align: right; font-variant-numeric: tabular-nums;
+  color: var(--accent, #1f4e8c); font-weight: 700;
+}
+.w-check { display: inline-flex; align-items: center; gap: 6px; font-size: 0.9rem; cursor: pointer; }
+.w-check input { accent-color: var(--accent, #1f4e8c); }
+
+/* 说明面板 */
+.w-status {
+  padding: 10px 14px; border-radius: 8px; font-size: 0.92rem; line-height: 1.75;
+  background: #f6f7f9; border-left: 4px solid var(--gray, #6b7280);
+}
+.w-status.is-ok { background: #edf7ef; border-left-color: var(--green, #2f7d32); }
+.w-status.is-bad { background: #fdf0ee; border-left-color: var(--red, #c0392b); }
+.w-status.is-info { background: #eef3fa; border-left-color: var(--navy, #1f4e8c); }
+.w-status p { margin: 0.25em 0; }
+.w-status ul { margin: 0.25em 0; padding-left: 1.2em; }
+.w-status li { margin: 0.15em 0; }
+.w-status b { color: #111827; }
+.w-ok { color: var(--green, #2f7d32); font-weight: 700; }
+.w-bad { color: var(--red, #c0392b); font-weight: 700; }
+.w-note { color: var(--muted, #8a90a0); font-size: 0.84rem; }
+
+/* 选项“芯片”（可点选的小方块） */
+.w-chips { display: flex; flex-wrap: wrap; gap: 6px; }
+.w-chip {
+  font: inherit; font-size: 0.9rem; cursor: pointer; padding: 4px 12px; border-radius: 999px;
+  background: #fff; color: var(--ink-2, #4a5263); border: 1px solid var(--line-2, #d4cec2);
+}
+.w-chip[aria-pressed="true"] { background: var(--fill-blue, #dbe7f6); color: var(--navy, #1f4e8c); border-color: var(--navy, #1f4e8c); }
+.w-chip.is-chosen { box-shadow: 0 0 0 2px var(--green, #2f7d32); background: #edf7ef; color: var(--green, #2f7d32); border-color: var(--green, #2f7d32); }
+
+/* 小表格 */
+.w-table { border-collapse: collapse; font-size: 0.88rem; line-height: 1.5; }
+.w-table th, .w-table td { border: 1px solid var(--line-2, #d4cec2); padding: 3px 8px; text-align: center; }
+.w-table th { background: #f3f1ea; font-weight: 700; }
+.w-table td.is-yes { color: var(--green, #2f7d32); }
+.w-table td.is-no { color: var(--muted, #8a90a0); }
+.w-table tr.is-chosen td, .w-table tr.is-chosen th { background: #edf7ef; }
+.w-table-wrap { overflow-x: auto; }
+
+/* 菜单行（显示偏好） */
+.w-menu-row { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 10px; padding: 4px 0; border-bottom: 1px dashed var(--line, #e3dfd6); }
+.w-menu-name { min-width: 6.2em; font-weight: 700; }
+.w-menu-row .w-arrow { color: var(--muted, #8a90a0); }
+
+.w-pref-line { padding: 6px 10px; background: #faf9f5; border: 1px solid var(--line, #e3dfd6); border-radius: 8px; }
+.w-pair-row { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 10px; }
+.w-pair-name { min-width: 5.5em; }

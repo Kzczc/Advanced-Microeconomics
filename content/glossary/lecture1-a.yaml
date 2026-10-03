@@ -1,0 +1,59 @@
+- k: rational-choice
+  zh: 理性选择
+  en: Rational choice
+  short: '先找出所有可行的选项，再从中挑出最偏好的那一个。“理性”只要求偏好前后一致（完备、传递），不要求自私，也不要求聪明。'
+  where: lecture1#p02
+
+- k: feasible-set
+  zh: 可行集
+  en: Feasible set
+  short: '在钱、时间、规定等约束下真正能选的那些选项组成的集合，也就是这一次的“菜单”，课件里记作 $B$。'
+  where: lecture1#p02
+
+- k: utility-maximization
+  zh: 效用最大化
+  en: Utility maximization
+  short: '给每个选项打一个分数 $u(x)$，在可行选项里选分数最高的。只要分数的高低如实反映偏好排序，它和“选最偏好的”结果完全一样。'
+  where: lecture1#p02
+
+- k: utilitarianism
+  zh: 功利主义
+  en: Utilitarianism
+  short: '19 世纪兴起的哲学思潮：政策应当追求“最大多数人的最大幸福”。为此需要一个能衡量每项政策给每个人带来多少好处的“效用”指标。'
+  where: lecture1#p02
+
+- k: self-interest
+  zh: 自利
+  en: Self-interest
+  short: '亚当·斯密的核心思想：每个人追求自己的利益，市场会把这些各自为己的行为协调成对整体有利的结果。'
+  where: lecture1#p02
+
+- k: welfare-analysis
+  zh: 福利分析
+  en: Welfare analysis
+  short: '判断一项政策或变化让人们变得更好还是更差、好多少。理性选择理论用人们自己的偏好（从他们的选择中推出）作为判断标准。'
+  where: lecture1#p02
+
+- k: comparative-statics
+  zh: 比较静态
+  en: Comparative statics
+  short: '比较环境（价格、收入、税收等）改变前后的最优选择，看选择朝哪个方向变。例如：价格上涨后买得更少。只比较前后两个状态，不管中间过程。'
+  where: lecture1#p02
+
+- k: framing-effect
+  zh: 框架效应
+  en: Framing effect
+  short: '同一个选择问题换一种描述方式（“框架”），人们的选择就跟着改变。例如同样省 5 美元，商品便宜时愿意跑一趟、商品贵时不愿意。它与理性偏好的假设相冲突。'
+  where: lecture1#p04
+
+- k: choice-rule
+  zh: 选择规则
+  en: Choice rule
+  short: '由偏好得到的选择：$C(B;\succeq)=\{x\in B\mid x\succeq y\ \forall y\in B\}$，即菜单 $B$ 中“不比任何选项差”的那些选项。'
+  where: lecture1#p05
+
+- k: optimal-choice-set
+  zh: 最优选择集
+  en: Set of most-preferred items
+  short: '集合 $C(B;\succeq)$ 本身：菜单 $B$ 里最好的选项。有并列时可能不止一个；菜单有限且非空、偏好理性时一定非空；菜单无限时可能是空集。'
+  where: lecture1#p05

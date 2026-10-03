@@ -1,0 +1,41 @@
+- k: choice-set
+  zh: 选择集
+  en: Choice set
+  short: '所有可能被选中的选项组成的集合，记作 $X$。它可以是几种具体物品，也可以是所有商品组合。'
+  where: lecture1#p03
+
+- k: weak-preference
+  zh: 弱偏好
+  en: Weak preference
+  short: '$x\succeq y$：这个人觉得 $x$ 至少和 $y$ 一样好（可能更好，也可能一样好）。'
+  where: lecture1#p03
+
+- k: strict-preference
+  zh: 严格偏好
+  en: Strict preference
+  short: '$x\succ y$：$x\succeq y$ 成立而 $y\succeq x$ 不成立，即 $x$ 真的比 $y$ 好。'
+  where: lecture1#p03
+
+- k: indifference
+  zh: 无差异
+  en: Indifference
+  short: '$x\sim y$：$x\succeq y$ 与 $y\succeq x$ 同时成立，即 $x$ 和 $y$ 一样好。'
+  where: lecture1#p03
+
+- k: completeness
+  zh: 完备性
+  en: Completeness
+  short: '任意两个选项都能比较：$x\succeq y$ 或 $y\succeq x$（或两者都成立）。'
+  where: lecture1#p03
+
+- k: transitivity
+  zh: 传递性
+  en: Transitivity
+  short: '若 $x\succeq y$ 且 $y\succeq z$，则 $x\succeq z$。偏好不会“兜圈子”。'
+  where: lecture1#p03
+
+- k: rational-preference
+  zh: 理性偏好
+  en: Rational preference
+  short: '同时满足完备性和传递性的偏好。它是整个理性选择理论的出发点。'
+  where: lecture1#p03

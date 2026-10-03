@@ -1,0 +1,69 @@
+# Course structure. The build script turns this into navigation and pages.
+course:
+  title_zh: 高级微观经济学 · 逐页精讲
+  title_en: Advanced Microeconomics — Slide-by-slide Notes
+  instructor: Siguang Li (HKUST(GZ))
+  term: Fall 2025
+
+lectures:
+  - id: lecture1
+    no: 1
+    title_en: "Choice Theory"
+    title_zh: "选择理论：偏好、选择与效用"
+    slides_pdf: slides/lecture1.pdf
+    reading_pdf: readings/reading1_choice_theory.pdf
+    n_slides: 29
+    status: ready
+    sections:
+      - id: intro
+        title_zh: "引子：微观经济学从个人决策出发"
+        intro: "为什么经济学要从“一个人怎么做选择”讲起，以及“理性选择”这套框架的优点。"
+        slides: [1, 2]
+      - id: preferences
+        title_zh: "偏好与选择规则"
+        intro: "用符号精确描述“谁比谁好”；理性偏好的两条要求；从偏好得到“选哪个”。"
+        slides: [3, 4, 5, 6, 7]
+      - id: revealed
+        title_zh: "显示偏好：从看到的选择反推偏好"
+        intro: "反过来问：只看到一个人的选择，能不能判断他背后有一套理性偏好？答案是 HARP。"
+        slides: [8, 9, 10, 11, 12, 13]
+      - id: utility
+        title_zh: "效用函数：给偏好打分"
+        intro: "把偏好翻译成数字：什么时候可以、为什么有时不行、分数本身有没有意义。"
+        slides: [14, 15, 16, 17]
+      - id: restrictions
+        title_zh: "对偏好的常用限制"
+        intro: "单调、局部非饱和、凸性、可分性、拟线性：它们各自的含义和对应的效用函数性质。"
+        slides: [18, 19, 20, 21, 22]
+      - id: behavioral
+        title_zh: "行为经济学的批评"
+        intro: "现实中的人并不总按理性模型行事：情境、框架、锚定、默认选项……以及这对政策分析意味着什么。"
+        slides: [23, 24, 25, 26, 27, 28, 29]
+
+  - id: lecture2
+    no: 2
+    title_en: "Consumer Theory"
+    title_zh: "消费者理论：需求、对偶与福利"
+    slides_pdf: slides/lecture2.pdf
+    reading_pdf: readings/reading2_consumer_theory.pdf
+    n_slides: 55
+    status: planned
+
+  - id: lecture3
+    no: 3
+    title_en: "Decision Theory under Uncertainty"
+    title_zh: "不确定性下的决策：期望效用与风险态度"
+    slides_pdf: slides/lecture3.pdf
+    reading_pdf: readings/reading3_uncertainty.pdf
+    n_slides: 68
+    status: planned
+
+basics:
+  - id: sets-logic
+    title_zh: "集合、逻辑符号与证明方法"
+  - id: functions-relations
+    title_zh: "函数与二元关系"
+  - id: sequences-continuity
+    title_zh: "序列、极限与连续"
+  - id: convexity
+    title_zh: "凸集、凸组合与拟凹函数"

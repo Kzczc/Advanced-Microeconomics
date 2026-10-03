@@ -1,0 +1,9 @@
+node_modules/
+dist/
+.work/
+__pycache__/
+*.pyc
+.DS_Store
+*.log
+.idea/
+.vscode/

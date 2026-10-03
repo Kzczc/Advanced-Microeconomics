@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>交互组件预览</title>
+<link rel="stylesheet" href="../site/assets/css/site.css">
+<link rel="stylesheet" href="../site/assets/css/widgets.css">
+<style>
+  body { padding: 24px; }
+  .preview { max-width: 780px; margin: 0 auto; }
+  h2 { font-size: 1.1rem; margin: 2em 0 0.4em; }
+</style>
+</head>
+<body>
+<div class="preview" id="preview"></div>
+<script type="module">
+  // Open with: python3 -m http.server (repo root) → /tools/widget_preview.html[?only=name]
+  const names = ['pref-checker', 'choice-rule', 'harp-checker', 'utility-transform', 'lexi-continuity',
+    'diagonal-utility', 'upper-contour', 'qc-1d', 'quasilinear'];
+  const only = new URLSearchParams(location.search).get('only');
+  const root = document.getElementById('preview');
+  for (const name of names.filter((n) => !only || n === only)) {
+    root.insertAdjacentHTML('beforeend', `<h2>${name}</h2><figure class="widget" id="w-${name}"><div class="widget-stage"></div></figure>`);
+    try {
+      const mod = await import(`../site/assets/js/widgets/${name}.js`);
+      mod.mount(document.querySelector(`#w-${name} .widget-stage`), {});
+    } catch (err) {
+      console.error(`${name}: ${err.stack || err}`);
+      document.querySelector(`#w-${name} .widget-stage`).textContent = `加载失败：${err}`;
+    }
+  }
+  document.body.dataset.ready = '1';
+</script>
+</body>
+</html>
