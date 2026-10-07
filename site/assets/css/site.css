@@ -185,6 +185,14 @@ kbd {
 .nav-slide.is-todo { color: var(--muted); }
 .nav-pno { flex: none; min-width: 1.6em; color: var(--muted); font-variant-numeric: tabular-nums; }
 .nav-slide.is-active .nav-pno { color: var(--accent); }
+.nav-check { display: none; flex: none; margin-left: auto; }
+.nav-check svg { width: 14px; height: 14px; fill: none; stroke: var(--green); stroke-width: 2.4; stroke-linecap: round; stroke-linejoin: round; }
+.nav-slide.is-done .nav-check { display: inline-flex; padding-top: 2px; }
+.nav-done {
+  flex: none; padding: 0 0.45em; border-radius: 999px; font-size: 0.72em; font-weight: 400;
+  color: var(--green); background: #eef7ee; font-variant-numeric: tabular-nums;
+}
+.nav-done.is-complete { color: #fff; background: var(--green); }
 
 .nav-scrim { display: none; }
 
@@ -280,9 +288,55 @@ h1 { font-size: 1.95rem; margin: 0.15em 0 0.3em; }
 .slide-head h2 { font-size: 1.6rem; margin: 0.1em 0 0.15em; }
 .slide-en { margin: 0; color: var(--ink-2); font-style: italic; }
 .slide-summary {
-  margin: 0.8em 0 0; padding: 0.55em 0.95em; color: var(--ink-2);
-  background: var(--paper); border: 1px solid var(--line); border-radius: 8px; line-height: 1.75;
+  margin: 0.9em 0 0; padding: 0.65em 1em 0.7em;
+  background: #fff8ef; border: 1px solid #f0dcc3; border-left: 4px solid var(--accent-2); border-radius: 8px;
 }
+.slide-summary p { margin: 0.35em 0 0; color: var(--ink); line-height: 1.8; }
+.summary-tag {
+  display: inline-block; padding: 0.06em 0.6em; border-radius: 4px;
+  font-size: 0.78rem; font-weight: 700; letter-spacing: 0.04em; color: #fff; background: var(--accent-2);
+}
+
+/* 本页小标题：每个 ### 一枚，点击跳转 */
+.slide-chips { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; margin: 0.9em 0 0; }
+.chips-label { margin-right: 2px; font-size: 0.8rem; color: var(--muted); }
+.slide-chips a {
+  display: inline-flex; align-items: center; padding: 0.12em 0.72em;
+  border: 1px solid var(--line-2); border-radius: 999px; background: var(--paper);
+  color: var(--ink-2); font-size: 0.84rem; line-height: 1.65; text-decoration: none;
+}
+.slide-chips a:hover { border-color: var(--accent); color: var(--accent); }
+.slide-chips .katex { font-size: 1em; }
+
+/* 这一页我看懂了 */
+.understood-row {
+  display: flex; flex-wrap: wrap; align-items: center; gap: 8px 14px;
+  margin: 2.4em 0 0; padding-top: 1.1em; border-top: 1px dashed var(--line-2);
+}
+.understood-btn {
+  display: inline-flex; align-items: center; gap: 8px; padding: 0.45em 1em; cursor: pointer;
+  border: 1px solid var(--line-2); border-radius: 999px; background: var(--paper);
+  color: var(--ink); font: inherit; font-size: 0.95rem;
+}
+.understood-btn:hover { border-color: var(--green); }
+.ub-box {
+  display: inline-grid; place-items: center; width: 18px; height: 18px;
+  border: 1.5px solid var(--line-2); border-radius: 5px; background: #fff;
+}
+.ub-box svg { width: 13px; height: 13px; fill: none; stroke: #fff; stroke-width: 2.6; stroke-linecap: round; stroke-linejoin: round; }
+.understood-btn[aria-pressed="true"] { border-color: var(--green); background: #eef7ee; color: #1f5f22; }
+.understood-btn[aria-pressed="true"] .ub-box { border-color: var(--green); background: var(--green); }
+.understood-note { font-size: 0.82rem; color: var(--muted); }
+
+/* 专注阅读：隐藏课件栏，讲解居中加宽 */
+.focus-toggle { display: none; }
+.is-section .focus-toggle { display: inline-flex; }
+.focus-toggle svg { width: 15px; height: 15px; fill: none; stroke: currentColor; stroke-width: 1.7; stroke-linejoin: round; }
+.focus-toggle[aria-pressed="true"] { border-color: var(--accent); color: var(--accent); background: var(--accent-soft); }
+.focus-mode .slide-block { grid-template-columns: minmax(0, 1fr); }
+.focus-mode .slide-col { display: none; }
+.focus-mode .notes { max-width: 860px; margin: 0 auto; width: 100%; }
+@media (max-width: 760px) { .focus-toggle span { display: none; } }
 .todo-note { color: var(--muted); font-style: italic; }
 
 /* ---- 正文排版（讲解栏与文章页共用） ---- */
@@ -550,7 +604,7 @@ details.answer > summary:hover { border-color: #7c3aed; }
 }
 .slide-fab svg { width: 16px; height: 16px; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
 .slide-fab[hidden] { display: none; }
-@media (min-width: 1024px) { .slide-fab { display: none !important; } }
+@media (min-width: 1024px) { .slide-fab { display: none !important; } .focus-mode .slide-fab:not([hidden]) { display: inline-flex !important; } }
 
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { transition: none !important; }

@@ -156,7 +156,8 @@ const visibleFigures = new Set();
 function updateFab() {
   if (!fab) return;
   const fig = currentBlock?.querySelector('.slide-figure');
-  const show = Boolean(stacked.matches && fig && !visibleFigures.has(fig));
+  const slidesHidden = stacked.matches || root.classList.contains('focus-mode');
+  const show = Boolean(slidesHidden && fig && !visibleFigures.has(fig));
   fab.hidden = !show;
   if (show) fab.querySelector('span').textContent = `看课件 · 第 ${currentBlock.dataset.slide} 页`;
 }
@@ -177,6 +178,64 @@ if (fab && blocks.length) {
 lightbox?.addEventListener('click', (e) => {
   if (e.target === lightbox) closeLightbox();
 });
+
+// ---------------------------------------------------------------------------
+// Focus mode: hide the slide column and read the notes full width
+// ---------------------------------------------------------------------------
+
+const focusBtn = document.querySelector('.focus-toggle');
+function syncFocusButton() {
+  if (!focusBtn) return;
+  const on = root.classList.contains('focus-mode');
+  focusBtn.setAttribute('aria-pressed', String(on));
+  focusBtn.querySelector('span').textContent = on ? '左右对照' : '专注阅读';
+}
+focusBtn?.addEventListener('click', () => {
+  const anchor = currentBlock;
+  const on = root.classList.toggle('focus-mode');
+  try { localStorage.setItem('am-layout', on ? 'focus' : 'split'); } catch { /* private mode */ }
+  syncFocusButton();
+  updateFab();
+  // The layout change moves everything; keep the reader on the same page.
+  anchor?.scrollIntoView({ block: 'start' });
+});
+syncFocusButton();
+
+// ---------------------------------------------------------------------------
+// "这一页我看懂了": per-page progress kept in localStorage only
+// ---------------------------------------------------------------------------
+
+const DONE_KEY = 'am-understood';
+function readDone() {
+  try { return new Set(JSON.parse(localStorage.getItem(DONE_KEY) || '[]')); } catch { return new Set(); }
+}
+function writeDone(done) {
+  try { localStorage.setItem(DONE_KEY, JSON.stringify([...done])); } catch { /* private mode */ }
+}
+function paintDone(done) {
+  document.querySelectorAll('.understood-btn').forEach((btn) => {
+    const on = done.has(btn.dataset.key);
+    btn.setAttribute('aria-pressed', String(on));
+    btn.querySelector('.ub-text').textContent = on ? '已看懂（再点一下取消）' : '这一页我看懂了';
+  });
+  document.querySelectorAll('.nav-slide[data-key]').forEach((a) => a.classList.toggle('is-done', done.has(a.dataset.key)));
+  document.querySelectorAll('.nav-done[data-keys]').forEach((badge) => {
+    const keys = badge.dataset.keys.split(',');
+    const n = keys.filter((k) => done.has(k)).length;
+    badge.hidden = n === 0;
+    badge.textContent = `${n}/${keys.length}`;
+    badge.classList.toggle('is-complete', n === keys.length);
+  });
+}
+document.querySelectorAll('.understood-btn').forEach((btn) => {
+  btn.addEventListener('click', () => {
+    const done = readDone();
+    if (done.has(btn.dataset.key)) done.delete(btn.dataset.key); else done.add(btn.dataset.key);
+    writeDone(done);
+    paintDone(done);
+  });
+});
+paintDone(readDone());
 lightbox?.querySelector('.lb-close')?.addEventListener('click', closeLightbox);
 lightbox?.querySelector('.lb-prev')?.addEventListener('click', () => showLightbox(lbIndex - 1));
 lightbox?.querySelector('.lb-next')?.addEventListener('click', () => showLightbox(lbIndex + 1));

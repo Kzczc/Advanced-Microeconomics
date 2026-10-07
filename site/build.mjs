@@ -337,7 +337,12 @@ const ICON = {
   prev: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="m15 5-7 7 7 7"/></svg>',
   next: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="m9 5 7 7-7 7"/></svg>',
   close: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg>',
+  focus: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 5h7v14H4zM13 5h7v14h-7z"/></svg>',
+  check: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="m5 12.5 4.5 4.5L19 7.5"/></svg>',
 };
+
+// Key used by site.js to remember which pages the reader has marked as understood.
+const doneKey = (lecture, n) => `${lecture}/${pid(n)}`;
 
 function sideNav(rel, cur, slideMeta) {
   const out = ['<nav class="sidenav" id="sidenav" aria-label="目录">'];
@@ -356,12 +361,13 @@ function sideNav(rel, cur, slideMeta) {
     for (const sec of lec.sections) {
       const here = cur.section === sec.id && open;
       const range = sec.slides.length > 1 ? `${sec.slides[0]}–${sec.slides.at(-1)}` : `${sec.slides[0]}`;
-      out.push(`<li class="nav-sec${here ? ' is-here' : ''}"><a class="nav-link${here ? ' is-current' : ''}" href="${rel}${lec.id}/${sec.id}.html"><span class="nav-sec-no">${sec.index + 1}</span><span class="nav-sec-title">${esc(sec.title_zh)}</span><span class="nav-range">${range}</span></a>`);
+      const keys = sec.slides.map((n) => doneKey(lec.id, n)).join(',');
+      out.push(`<li class="nav-sec${here ? ' is-here' : ''}"><a class="nav-link${here ? ' is-current' : ''}" href="${rel}${lec.id}/${sec.id}.html"><span class="nav-sec-no">${sec.index + 1}</span><span class="nav-sec-title">${esc(sec.title_zh)}</span><span class="nav-range">${range}</span><span class="nav-done" data-keys="${keys}" hidden></span></a>`);
       if (here) {
         out.push('<ol class="nav-slides">');
         for (const n of sec.slides) {
           const m = slideMeta.get(`${lec.id}/${n}`);
-          out.push(`<li><a class="nav-slide${m ? '' : ' is-todo'}" href="#${pid(n)}" data-slide="${pid(n)}"><span class="nav-pno">${n}</span><span>${esc(m?.title_zh ?? '（编写中）')}</span></a></li>`);
+          out.push(`<li><a class="nav-slide${m ? '' : ' is-todo'}" href="#${pid(n)}" data-slide="${pid(n)}" data-key="${doneKey(lec.id, n)}"><span class="nav-pno">${n}</span><span>${esc(m?.title_zh ?? '（编写中）')}</span><span class="nav-check" aria-hidden="true">${ICON.check}</span></a></li>`);
         }
         out.push('</ol>');
       }
@@ -395,7 +401,7 @@ function layout({ title, rel, crumbs = [], nav, main, bodyClass = '', descriptio
 <link rel="stylesheet" href="${rel}assets/katex/katex.min.css">
 <link rel="stylesheet" href="${rel}assets/css/site.css">
 <link rel="stylesheet" href="${rel}assets/css/widgets.css">
-<script>try{var s=localStorage.getItem('am-font-scale');if(s)document.documentElement.style.setProperty('--font-scale',s)}catch(e){}</script>
+<script>try{var s=localStorage.getItem('am-font-scale');if(s)document.documentElement.style.setProperty('--font-scale',s);if(localStorage.getItem('am-layout')==='focus')document.documentElement.classList.add('focus-mode')}catch(e){}</script>
 <script type="module" src="${rel}assets/js/site.js"></script>
 </head>
 <body class="${bodyClass}" data-rel="${rel}">
@@ -407,6 +413,7 @@ function layout({ title, rel, crumbs = [], nav, main, bodyClass = '', descriptio
     <nav class="crumbs" aria-label="当前位置">${crumbHtml}</nav>
     <div class="tools">
       <button class="tool-btn search-open" type="button" aria-label="搜索">${ICON.search}<span>搜索</span><kbd>/</kbd></button>
+      <button class="tool-btn focus-toggle" type="button" aria-pressed="false" title="隐藏左边的课件，只看讲解；课件可用右下角按钮随时打开">${ICON.focus}<span>专注阅读</span></button>
       <div class="font-tools" role="group" aria-label="字号">
         <button class="tool-btn" type="button" data-font="-1" aria-label="缩小字号">A−</button>
         <button class="tool-btn" type="button" data-font="1" aria-label="放大字号">A+</button>
@@ -514,13 +521,24 @@ async function main() {
           const r = await renderMarkdown(meta.body, ctx);
           counters.figNo = ctx.figNo;
           counters.widgetNo = ctx.widgetNo;
+          // "本页小标题": one chip per ### heading of this page.
+          const chips = [...r.html.matchAll(/<h3 id="([^"]+)">([\s\S]*?)<\/h3>/g)]
+            .map(([, id, inner]) => `<a href="#${id}">${inner}</a>`).join('');
+          const summary = meta.summary
+            ? `<div class="slide-summary"><span class="summary-tag">一句话版</span><p>${await renderInline(meta.summary, { rel, lecture: lec.id, where, glossary })}</p></div>`
+            : '';
           notes = `<header class="slide-head">
   <div class="kicker">第 ${n} 页 <span class="kicker-of">/ 共 ${lec.n_slides} 页</span></div>
   <h2 id="${pid(n)}-title">${esc(meta.title_zh)}</h2>
   <p class="slide-en">${esc(meta.title_en)}</p>
-  ${meta.summary ? `<p class="slide-summary">${await renderInline(meta.summary, { rel, lecture: lec.id, where, glossary })}</p>` : ''}
+  ${summary}
+  ${chips ? `<nav class="slide-chips" aria-label="本页小标题"><span class="chips-label">本页小标题</span>${chips}</nav>` : ''}
 </header>
-${r.html}`;
+${r.html}
+<div class="understood-row">
+  <button class="understood-btn" type="button" aria-pressed="false" data-key="${doneKey(lec.id, n)}"><span class="ub-box" aria-hidden="true">${ICON.check}</span><span class="ub-text">这一页我看懂了</span></button>
+  <span class="understood-note">只记在你自己的浏览器里，左侧目录会打勾</span>
+</div>`;
           search.push({
             t: `第 ${lec.no} 讲 · 第 ${n} 页 · ${meta.title_zh}`,
             e: meta.title_en ?? '',

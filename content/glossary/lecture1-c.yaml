@@ -1,0 +1,53 @@
+- k: utility-function
+  zh: 效用函数
+  en: Utility function
+  short: '一个函数 $u:X\to\R$，给每个选项 $x$ 打一个实数分数 $u(x)$。分数只用来排序：分高表示更喜欢。'
+  where: lecture1#p14
+
+- k: utility-representation
+  zh: 效用表示
+  en: Utility representation
+  short: '说 $u$ 表示偏好 $\succeq$，是指对任意 $x,y$：$x\succeq y \iff u(x)\ge u(y)$。这时“选最喜欢的”就等于“选分数最高的”：$C(B;\succeq)=\arg\max_{y\in B}u(y)$。'
+  where: lecture1#p14
+
+- k: lexicographic-preference
+  zh: 字典序偏好
+  en: Lexicographic preferences
+  short: '像查字典一样比较：先比第一个分量，大的更好；第一个分量相等时，再比第二个分量。它完备、传递，但不连续，也找不到任何实值效用函数来表示。'
+  where: lecture1#p15
+
+- k: continuity-preference
+  zh: 偏好的连续性
+  en: Continuity of preferences
+  short: '若 $(x_n,y_n)\to(x,y)$ 且对所有 $n$ 都有 $x_n\succeq y_n$，则 $x\succeq y$。意思是：“不差于”这个关系在取极限时不会突然反转。'
+  where: lecture1#p15
+
+- k: ordinal-utility
+  zh: 序数效用
+  en: Ordinal utility
+  short: '效用只有“排序”的意义：只看谁的分数高，不看高多少。所以同一个偏好可以用无数个效用函数表示，它们的数值本身没有含义。'
+  where: lecture1#p16
+
+- k: monotone-transformation
+  zh: 递增变换
+  en: Increasing (monotone) transformation
+  short: '用一个严格递增的函数 $v$ 把分数整体换一下：$U(x)=v(u(x))$。排序保持不变，所以若 $u$ 表示 $\succeq$，$U$ 也表示 $\succeq$。例如 $2u+1$、$u^3$、$e^{u}$。'
+  where: lecture1#p16
+
+- k: interpersonal-comparison
+  zh: 人际效用比较
+  en: Interpersonal comparison of utility
+  short: '比较“同一样东西对你和对我谁更有价值”。由选择推出的效用可以任意做递增变换，所以不能用它在人与人之间比较效用的高低或增量。'
+  where: lecture1#p16
+
+- k: veil-of-ignorance
+  zh: 无知之幕
+  en: Veil of ignorance
+  short: '一种假想的选择情境：在不知道自己将成为社会中哪个人（例如饥饿的人还是吃饱的人）的前提下，选择分配规则。有人试图借此做人际比较；批评者认为假想的选择不如真实选择可靠。'
+  where: lecture1#p17
+
+- k: just-noticeable-difference
+  zh: 刚可察觉差异
+  en: Just noticeable difference
+  short: '人察觉不到太小的差别。用效用描述：$x\succ y \iff u(x)\ge u(y)+1$，差距小于 1 时就觉得无差异。这时 $\succ$ 仍传递，但 $\sim$ 不再传递。'
+  where: lecture1#p17
