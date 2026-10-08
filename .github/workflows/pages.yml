@@ -19,6 +19,7 @@ jobs:
         with:
           node-version: 22
       - run: npm ci --registry=https://registry.npmjs.org
+      - run: npm run check
       - run: npm run build
       - uses: actions/upload-pages-artifact@v3
         with:

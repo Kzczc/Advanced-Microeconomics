@@ -6,8 +6,9 @@
   "type": "module",
   "scripts": {
     "build": "node site/build.mjs",
+    "check": "node tools/check_content.mjs",
     "serve": "python3 -m http.server 8766 --directory dist",
-    "figures": "python3 tools/make_figures.py"
+    "figures": "for f in tools/figures/*/*.py; do python3 \"$f\" || exit 1; done"
   },
   "license": "UNLICENSED",
   "dependencies": {
