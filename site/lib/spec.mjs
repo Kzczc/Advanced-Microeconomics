@@ -57,6 +57,11 @@ export const WIDGETS = [
   'upper-contour',
   'qc-1d',
   'quasilinear',
+  'separability',
+  'anchoring',
+  'default-effect',
+  'convex-mix',
+  'seq-limit',
 ];
 
 // Headings allowed inside a slide file (the page title is h1, the slide title is h2).

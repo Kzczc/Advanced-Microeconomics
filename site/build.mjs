@@ -31,7 +31,7 @@ import {
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const CONTENT = path.join(ROOT, 'content');
-const DIST = path.join(ROOT, 'dist');
+const DIST = process.env.AM_DIST ? path.resolve(process.env.AM_DIST) : path.join(ROOT, 'dist');
 const SITE_NAME = '高级微观经济学 · 逐页精讲';
 
 const problems = [];

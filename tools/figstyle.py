@@ -59,6 +59,10 @@ PREAMBLE = "\n".join(
         r"\usepackage{unicode-math}",
         r"\setmainfont{TeX Gyre Termes}",
         r"\setmathfont{TeX Gyre Termes Math}",
+        # Termes draws ≻ / ⪰ almost like > / ≥; take the preference relations from Latin Modern,
+        # which also matches how KaTeX renders them in the page text.
+        r"\setmathfont{Latin Modern Math}[range={\succ,\prec,\succeq,\preceq,\succsim,\precsim,"
+        r"\succcurlyeq,\preccurlyeq,\nsucc,\nprec}]",
         r"\usepackage{xeCJK}",
         r"\setCJKmainfont{Noto Serif CJK SC}",
     ]

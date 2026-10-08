@@ -48,7 +48,8 @@ ax.plot(*q, "o", **POINT)
 ax.plot(*mid, "o", ms=6, color=C["teal"], zorder=5)
 ax.annotate("$x$", p, xytext=(6, 2), textcoords="offset points", ha="left", va="bottom")
 ax.annotate("$y$", q, xytext=(2, 6), textcoords="offset points", ha="left", va="bottom")
-ax.annotate("$f=2.24\\ge 2$", mid, xytext=(10, 4), textcoords="offset points", ha="left",
+ax.annotate("$f=%.2f\\ge 2$" % np.sqrt(mid).sum(), mid, xytext=(10, 4), textcoords="offset points",
+            ha="left",
             va="bottom", color=C["teal"], fontsize=10)
 ax.text(2.35, 2.6, "$U_2$", color=C["navy"], ha="center")
 title_above(ax, "（a）$f=\\sqrt{x_1}+\\sqrt{x_2}$")
@@ -79,7 +80,8 @@ ax.plot(*q, "o", **POINT)
 ax.plot(*mid, "o", ms=6, color=C["red"], zorder=5)
 ax.annotate("$x$", p, xytext=(6, 2), textcoords="offset points", ha="left", va="bottom")
 ax.annotate("$y$", q, xytext=(2, 6), textcoords="offset points", ha="left", va="bottom")
-ax.annotate("$f=3.15<4$", mid, xytext=(-8, -8), textcoords="offset points", ha="right",
+ax.annotate("$f=%.2f<4$" % (mid**2).sum(), mid, xytext=(-8, -8), textcoords="offset points",
+            ha="right",
             va="top", color=C["red"], fontsize=10)
 ax.text(2.55, 2.6, "$U_4$", color=C["navy"], ha="center")
 title_above(ax, "（b）$f=x_1^2+x_2^2$")
@@ -99,17 +101,15 @@ ax.plot([5 - half, 5 + half], [0.012, 0.012], color=C["teal"], lw=5, solid_capst
         zorder=4)
 for edge in (5 - half, 5 + half):
     ax.plot([edge, edge], [0, alpha], color=C["teal"], lw=1, ls=(0, (2, 2)), zorder=1)
-ax.text(5, 0.07, "$U_\\alpha$（一段区间）", ha="center", va="bottom", color=C["teal"],
-        fontsize=10)
+ax.text(5, 0.07, "$U_\\alpha$", ha="center", va="bottom", color=C["teal"], fontsize=10.5)
 # A chord on the left tail lies above the graph: concavity fails.
 a, b = 0.8, 3.6
 fa, fb = np.exp(-((a - 5) ** 2) / 4), np.exp(-((b - 5) ** 2) / 4)
 ax.plot([a, b], [fa, fb], color=C["red"], lw=1.6, zorder=3)
 ax.plot([a, b], [fa, fb], "o", ms=4.5, color=C["red"], zorder=5)
-ax.annotate("弦在曲线上方", ((a + b) / 2, (fa + fb) / 2), xytext=(-6, 36),
-            textcoords="offset points", ha="center", va="bottom", color=C["red"], fontsize=10,
-            arrowprops=dict(arrowstyle="-", lw=0.8, color=C["red"], shrinkA=1, shrinkB=3))
+ax.annotate("弦", ((a + b) / 2, (fa + fb) / 2), xytext=(-9, 3), textcoords="offset points",
+            ha="right", va="center", color=C["red"], fontsize=10.5)
 title_above(ax, "（c）钟形 $f(x)=e^{-(x-5)^2/4}$")
-label_below(ax, "拟凹（$U_\\alpha$ 都是区间），但不凹")
+label_below(ax, "拟凹（$U_\\alpha$ 都是区间）\n但不凹：红色的弦在曲线上方")
 
 save(fig, "p20-quasiconcave", lecture="lecture1")

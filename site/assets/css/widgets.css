@@ -95,6 +95,10 @@
 .w-table td.is-no { color: var(--muted, #8a90a0); }
 .w-table tr.is-chosen td, .w-table tr.is-chosen th { background: #edf7ef; }
 .w-table-wrap { overflow-x: auto; }
+.w-table.is-compact th, .w-table.is-compact td { white-space: nowrap; }
+@media (max-width: 480px) {
+  .w-table.is-compact th, .w-table.is-compact td { padding: 3px 5px; }
+}
 
 /* 菜单行（显示偏好） */
 .w-menu-row { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 10px; padding: 4px 0; border-bottom: 1px dashed var(--line, #e3dfd6); }

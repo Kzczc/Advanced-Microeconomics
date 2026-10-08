@@ -1,0 +1,71 @@
+- k: monotonicity
+  zh: 单调性
+  en: Monotonicity
+  short: '若 $x\ge y$（每样东西都不少），则 $x\succeq y$。大白话：东西多一点，至少不会更差。'
+  where: lecture1#p19
+
+- k: strict-monotonicity
+  zh: 严格单调
+  en: Strict monotonicity
+  short: '若 $x\gg y$（每样东西都更多），则 $x\succ y$。大白话：每样都多一点，一定更好。'
+  where: lecture1#p19
+
+- k: local-nonsatiation
+  zh: 局部非饱和
+  en: Local non-satiation
+  short: '对任意 $y$ 和任意 $\varepsilon>0$，在 $y$ 附近（距离小于 $\varepsilon$）都能找到 $x\succ y$。大白话：永远“吃不饱”，稍微改一点总能更好。用效用说：$u$ 没有局部最大值。'
+  where: lecture1#p19
+
+- k: convex-preference
+  zh: 凸偏好
+  en: Convex preferences
+  short: '若 $x\succeq y$、$x''\succeq y$，则对 $t\in(0,1)$ 有 $tx+(1-t)x''\succeq y$。大白话：两个都不比 $y$ 差的组合，混合以后也不比 $y$ 差；等价地，每个上等高集都是凸集。'
+  where: lecture1#p19
+
+- k: strictly-convex-preference
+  zh: 严格凸偏好
+  en: Strictly convex preferences
+  short: '若 $x\succeq y$、$x''\succeq y$ 且 $x\ne x''$，则对 $t\in(0,1)$ 有 $tx+(1-t)x''\succ y$。大白话：两个不同的、都不比 $y$ 差的组合，混合以后严格更好。'
+  where: lecture1#p19
+
+- k: upper-contour-set
+  zh: 上等高集
+  en: Upper contour set
+  short: '偏好里，$y$ 的上等高集是 $\{x\in X: x\succeq y\}$，即所有不比 $y$ 差的选项；函数里，$U_\alpha=\{x\in C\mid f(x)\ge\alpha\}$，即函数值至少为 $\alpha$ 的点。'
+  where: lecture1#p20
+
+- k: quasi-concave
+  zh: 拟凹函数
+  en: Quasi-concave function
+  short: '每个上等高集 $U_\alpha$ 都是凸集；等价地，$f(\lambda x+(1-\lambda)y)\ge\min\{f(x),f(y)\}$。大白话：混合后的函数值不低于两端中较小的那个。凸偏好对应拟凹效用。'
+  where: lecture1#p20
+
+- k: strictly-quasi-concave
+  zh: 严格拟凹
+  en: Strictly quasi-concave function
+  short: '对任意 $x\ne y$ 和 $\lambda\in(0,1)$，$f(\lambda x+(1-\lambda)y)>\min\{f(x),f(y)\}$。严格凸偏好对应严格拟凹效用。'
+  where: lecture1#p20
+
+- k: separability
+  zh: 可分性
+  en: Separability
+  short: '选择分成 $x$ 和 $y$ 两部分时，对任何菜单 $S$，最优的 $x^*(S,y)$ 都不随 $y$ 改变。命题 6：这等价于效用能写成 $u(x,y)=U(v(x),y)$，$U$ 对第一个位置递增。'
+  where: lecture1#p21
+
+- k: quasi-linear
+  zh: 拟线性偏好
+  en: Quasi-linear preferences
+  short: '效用能写成 $u(a,y)=a+v(y)$：钱 $a$ 单独加上去，$v(y)$ 是 $y$ 折合成的钱数。它意味着没有财富效应。'
+  where: lecture1#p22
+
+- k: numeraire
+  zh: 计价物
+  en: Numeraire
+  short: '用来给其他东西标价的那一样商品，通常就是钱。拟线性效用 $a+v(y)$ 里的 $a$ 就是计价物，$v(y)$ 是 $y$ 值多少单位计价物。'
+  where: lecture1#p22
+
+- k: wealth-effect
+  zh: 财富效应
+  en: Wealth effect
+  short: '一个人变得更有钱（或更穷）时，他的选择跟着改变。没有财富效应：给两个选项加上同样多的钱，排序不变；你肯为某样东西付的钱，和你本来有多少钱无关。'
+  where: lecture1#p22
