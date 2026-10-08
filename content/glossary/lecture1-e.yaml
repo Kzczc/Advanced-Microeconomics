@@ -1,0 +1,137 @@
+- k: behavioral-economics
+  zh: 行为经济学
+  en: Behavioral economics
+  short: '把心理学的发现引入经济学：用实验和真实数据检查人到底怎么选，找出和理性选择模型不符的地方，再修改模型。'
+  where: lecture1#p23
+
+- k: systematic-deviation
+  zh: 系统性偏离
+  en: Systematic deviation
+  short: '很多人在同一类情况下朝同一个方向偏离理性模型的预测，并且能重复观察到。和方向不定、平均下来会抵消的随机失误不同。'
+  where: lecture1#p23
+
+- k: context-dependence
+  zh: 情境依赖
+  en: Context dependence
+  short: '人的选择随情境改变：选项怎么摆、怎么描述、旁边有谁、心情如何、菜单上还有什么。偏好情境依赖时，从一个情境推出的偏好不能直接用到另一个情境。'
+  where: lecture1#p24
+
+- k: temptation
+  zh: 诱惑
+  en: Temptation
+  short: '一时很想要、冷静时却觉得不该要的东西，比如深夜的炸鸡。诱惑即使没被选中，也会改变人衡量其他选项的参照点。'
+  where: lecture1#p24
+
+- k: portability
+  zh: 可移植性
+  en: Portability
+  short: '从一个情境推出的偏好，搬到另一个情境还能不能用来预测。偏好越随情境变化，可移植性越低，理论的预测力越弱。'
+  where: lecture1#p24
+
+- k: decoy-effect
+  zh: 诱饵效应
+  en: Decoy effect
+  short: '往菜单里加一个本身没人选、却明显不如某个选项的选项，会让那个选项被选得更多。例如《经济学人》订阅实验：去掉没人选的“仅印刷版”，选“印刷 + 网络”的人从 84 降到 32。'
+  where: lecture1#p24
+
+- k: heuristic
+  zh: 启发式
+  en: Heuristic
+  short: '经验法则：简单好用、不追求精确的决策办法，比如“满意即可”“每样分一点”“跟着默认走”。在熟悉的环境里往往接近最优，换到陌生环境容易系统性出错。'
+  where: lecture1#p25
+
+- k: bounded-rationality
+  zh: 有限理性
+  en: Bounded rationality
+  short: 'Herbert Simon 提出的说法：人的时间、信息和计算能力有限，无法在每件事上都找出最优，而是用经验法则找“够好的”。'
+  where: lecture1#p25
+
+- k: satisficing
+  zh: 满意即可
+  en: Satisficing
+  short: '先定一个“够好”的标准，遇到第一个达标的选项就停下，不再继续找最优。把继续寻找的代价算进去，这往往是合理的做法。'
+  where: lecture1#p25
+
+- k: anchoring
+  zh: 锚定效应
+  en: Anchoring
+  short: '估计一个数时，从先看到的某个数（锚）出发再往上下调，结果偏向这个锚，哪怕锚是随机的。例如先写下社保号末两位，再给商品出价。'
+  where: lecture1#p26
+
+- k: coherent-arbitrariness
+  zh: 一致的任意性
+  en: Coherent arbitrariness
+  short: 'Ariely、Loewenstein、Prelec（2003）的发现：估价的绝对水平可以被随机的锚决定（任意），但定下起点以后，各个估价之间又很有条理，比如好东西出价更高（一致）。'
+  where: lecture1#p26
+
+- k: willingness-to-pay
+  zh: 愿付价格
+  en: Willingness to pay (WTP)
+  short: '一个人为得到某样东西最多愿意付的钱。价格不超过它就买，超过就不买。'
+  where: lecture1#p26
+
+- k: correlation
+  zh: 相关系数
+  en: Correlation coefficient
+  short: '衡量两组数一起变动程度的数，取值在 $-1$ 到 $1$ 之间：接近 $1$ 表示一个大另一个也大，接近 $0$ 表示看不出关系，接近 $-1$ 表示一个大另一个反而小。'
+  where: lecture1#p26
+
+- k: default-effect
+  zh: 默认效应
+  en: Default effect
+  short: '默认选项是什么都不做时得到的选项。人们常常停在默认上，所以默认怎么设会大大改变结果。例如 401(k) 自动加入后参加率从 37% 升到 86%。'
+  where: lecture1#p27
+
+- k: opt-in-opt-out
+  zh: 选择加入与选择退出
+  en: Opt-in vs opt-out
+  short: '选择加入：默认不参加，想参加要自己报名；选择退出：默认参加，不想参加要自己申请退出。两种设计下能选的东西完全一样，只是默认不同。'
+  where: lecture1#p27
+
+- k: inertia
+  zh: 惯性
+  en: Inertia
+  short: '倾向于维持现状、不去改变，即使改变的代价很小、好处很大。拖延、不去想、把默认当成推荐，都会造成惯性。'
+  where: lecture1#p27
+
+- k: reference-point
+  zh: 参照点
+  en: Reference point
+  short: '人在心里拿来比较的基准。同一个结果，和不同的参照点比，感觉好坏不同；诱惑和菜单上的其他选项都会移动参照点。'
+  where: lecture1#p28
+
+- k: self-control
+  zh: 自我控制
+  en: Self-control
+  short: '面对诱惑时忍住、按长远利益行事的能力。Gul 和 Pesendorfer 的模型里，忍住诱惑本身要付出代价。'
+  where: lecture1#p28
+
+- k: commitment-device
+  zh: 承诺手段
+  en: Commitment device
+  short: '事先把诱惑从菜单上拿掉或让它变贵的安排，比如复习时用软件锁住手机。知道自己会被诱惑的人，会严格偏好选项更少的菜单。'
+  where: lecture1#p28
+
+- k: habit-formation
+  zh: 习惯形成
+  en: Habit formation
+  short: '过去的消费会改变今天的偏好：今天的满足取决于今天的消费和过去习惯的差距。例如喝惯全糖奶茶，改喝半糖会觉得没味道。'
+  where: lecture1#p28
+
+- k: tractability
+  zh: 可处理性
+  en: Tractability
+  short: '模型好不好算、好不好分析。假设越简单，越容易求出结果、推出结论。'
+  where: lecture1#p28
+
+- k: predictive-power
+  zh: 预测力
+  en: Predictive power
+  short: '模型能不能给出明确、可能被数据推翻的预测。什么结果都能解释的模型，预测力为零。'
+  where: lecture1#p28
+
+- k: nudge
+  zh: 助推
+  en: Nudge
+  short: 'Thaler 和 Sunstein（2008）的说法：不禁止任何选项、不明显改变价格，只改变选择的呈现方式（比如默认），引导人们做出对自己更好的选择。'
+  where: lecture1#p29

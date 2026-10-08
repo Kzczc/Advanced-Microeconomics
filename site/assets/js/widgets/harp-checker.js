@@ -8,24 +8,30 @@ const PRESETS = {
   rational: [['x'], ['x'], ['y'], ['x']],
   violate: [['y'], ['x'], ['y'], ['x']],
   indiff: [['x', 'y'], ['x', 'z'], ['y', 'z'], ['x', 'y', 'z']],
+  // Page 24: x = cake, y = apple pie, z = fruit.
+  dessert: [['y'], ['z'], ['z'], ['y']],
 };
 
 const v = (e) => `<i class="w-var">${e}</i>`;
 const set = (arr) => `{${arr.map(v).join(', ')}}`;
 
-export function mount(stage) {
-  const choice = PRESETS.rational.map((c) => new Set(c));
+export function mount(stage, opts = {}) {
+  const start = PRESETS[opts.preset] ? opts.preset : 'rational';
+  const choice = PRESETS[start].map((c) => new Set(c));
   const { plot, side } = skeleton(stage);
 
-  const presets = segmented([
+  const options = [
     ['rational', '理性的例子'],
     ['violate', '违反 HARP'],
     ['indiff', '全部无差异'],
-  ], 'rational', (p) => {
+  ];
+  if (start === 'dessert') options.unshift(['dessert', '甜品菜单']);
+  const presets = segmented(options, start, (p) => {
     PRESETS[p].forEach((c, i) => { choice[i] = new Set(c); });
     update();
   }, '预设');
   plot.append(h('div', { class: 'w-controls', style: 'margin-bottom:8px' }, presets.el));
+  if (opts.legend) plot.append(h('p', { class: 'w-note', style: 'margin:0 0 4px', text: opts.legend }));
   plot.append(h('p', { class: 'w-note', style: 'margin:0 0 4px', html: '每一行是一个菜单 <i class="w-var">A</i>。点选这个人从菜单里选了哪些（可以多选，表示一样好，但不能一个都不选）。单元素菜单只能选它自己：<i class="w-var">C</i>({<i class="w-var">x</i>}) = {<i class="w-var">x</i>}。' }));
 
   const rows = MENUS.map((menu, mi) => {
