@@ -33,6 +33,8 @@
 
 .w-handle { cursor: grab; touch-action: none; }
 .w-handle.is-dragging { cursor: grabbing; }
+.w-handle:focus { outline: none; }
+.w-handle:focus-visible { filter: drop-shadow(0 0 2px #1f4e8c) drop-shadow(0 0 4px #1f4e8c); }
 .w-point-label { font-weight: 700; font-size: 14px; paint-order: stroke; stroke: #fffefb; stroke-width: 4px; }
 
 /* 控件 */

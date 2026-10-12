@@ -133,9 +133,22 @@ kbd {
 }
 @media (max-width: 760px) {
   .topbar-inner { gap: 8px; padding: 0 10px; }
-  .brand span, .search-open span, .search-open kbd { display: none; }
+  .brand span, .search-open span, .search-open kbd, .theme-toggle span { display: none; }
   .crumbs { display: none; }
   .tools { margin-left: auto; }
+}
+@media (max-width: 480px) {
+  .topbar-inner { gap: 6px; padding: 0 8px; }
+  .brand { flex: 0 1 auto; min-width: 0; overflow: hidden; text-overflow: ellipsis; }
+  .tools { gap: 5px; }
+  .font-tools { gap: 3px; }
+  .tool-btn { padding: 0 8px; }
+}
+@media (max-width: 380px) {
+  .brand { font-size: 0.98rem; }
+  .tools { gap: 4px; }
+  .tool-btn { padding: 0 6px; }
+  .nav-toggle { width: 34px; }
 }
 
 /* ------------------------------------------------------------------ */
@@ -610,10 +623,107 @@ details.answer > summary:hover { border-color: #7c3aed; }
   *, *::before, *::after { transition: none !important; }
 }
 
+/* 搜索跳转后的高亮 */
+mark.search-hl { background: #fde68a; color: inherit; padding: 0 0.1em; border-radius: 3px; }
+
+/* 自测汇总（错题本）与定义速查 */
+.nav-extra .nav-link { font-size: 0.92rem; color: var(--ink-2); }
+.rv-toolbar {
+  position: sticky; top: calc(var(--topbar-h) + 6px); z-index: 5;
+  display: flex; flex-wrap: wrap; align-items: center; gap: 8px 12px; margin: 0.6em 0 1.2em; padding: 10px 12px;
+  background: var(--paper); border: 1px solid var(--line-2); border-radius: var(--radius);
+}
+.rv-count { color: var(--ink-2); font-size: 0.92rem; }
+.rv-sec { margin: 1.6em 0 0.6em; font-size: 1.2rem; }
+.rv-item, .sh-item { margin: 0 0 1.4em; }
+.rv-meta { margin-bottom: 0.25em; font-size: 0.9rem; }
+.rv-src { color: var(--ink-2); text-decoration: none; border-bottom: 1px dotted var(--line-2); }
+.rv-src:hover { color: var(--accent); border-bottom-color: var(--accent); }
+.sheet-body h2 { margin-top: 2em; padding-bottom: 0.3em; border-bottom: 1px solid var(--line); }
+.sheet-body h3 { margin-top: 1.8em; }
+.sheet-body .box { margin: 0.6em 0; }
+.sh-oneliners { margin-top: 2.2em; padding-bottom: 0.3em; border-bottom: 1px solid var(--line); }
+.sh-sums { list-style: none; margin: 0 0 1.2em; padding: 0; }
+.sh-sums li { padding: 10px 0; border-bottom: 1px dashed var(--line); }
+.sh-sums li p { margin: 4px 0 0; }
+.rv-item .box, .sh-item .box { margin: 0; }
+.rv-mark { display: flex; gap: 8px; margin-top: 0.5em; }
+.rv-btn[data-mark="ok"][aria-pressed="true"] { color: #fff; background: var(--green); border-color: var(--green); }
+.rv-btn[data-mark="bad"][aria-pressed="true"] { color: #fff; background: var(--red); border-color: var(--red); }
+.rv-item[data-mark="ok"] .box { border-left-color: var(--green); }
+.rv-item[data-mark="bad"] .box { border-left-color: var(--red); }
+.rv-empty { color: var(--muted); text-align: center; }
+.sh-tools { margin: 0.4em 0 1em; }
+.tool-card p { margin: 0.3em 0 0.5em; color: var(--ink-2); font-size: 0.95rem; }
+.progress-actions { display: flex; flex-wrap: wrap; gap: 8px; }
+.progress-import { cursor: pointer; }
+
+/* ------------------------------------------------------------------
+   夜间模式：只换颜色。课件页图、静态图和交互组件内部的文字是深色画在
+   透明背景上的，所以它们仍放在浅色底上，保证看得清。
+   ------------------------------------------------------------------ */
+html[data-theme="dark"] {
+  color-scheme: dark;
+  --bg: #15181e; --paper: #1d2129; --ink: #e4e6eb; --ink-2: #b6bcc8; --muted: #8b93a3;
+  --line: #2e3440; --line-2: #3b4250; --accent: #7fb0ec; --accent-2: #f08a6c; --accent-soft: #24324a;
+}
+html[data-theme="dark"] body { background: var(--bg); color: var(--ink); }
+html[data-theme="dark"] .topbar, html[data-theme="dark"] .search-box, html[data-theme="dark"] .term-pop,
+html[data-theme="dark"] .sec-card, html[data-theme="dark"] .lec-card, html[data-theme="dark"] .tool-card,
+html[data-theme="dark"] .pager-link, html[data-theme="dark"] .page-toc, html[data-theme="dark"] .understood-btn,
+html[data-theme="dark"] .tool-btn, html[data-theme="dark"] kbd, html[data-theme="dark"] .skip-link,
+html[data-theme="dark"] .slide-chips a, html[data-theme="dark"] .w-btn, html[data-theme="dark"] .gl-filter {
+  background: var(--paper); color: var(--ink); border-color: var(--line-2);
+}
+html[data-theme="dark"] .sidenav, html[data-theme="dark"] .lec-card.is-planned { background: #181b22; }
+html[data-theme="dark"] .nav-link:hover, html[data-theme="dark"] .nav-slide:hover { background: #262b35; }
+html[data-theme="dark"] .nav-slide.is-active { background: #232a36; }
+html[data-theme="dark"] .slide-summary { background: #2a2219; border-color: #4a3826; }
+html[data-theme="dark"] .table-wrap table { background: var(--paper); }
+html[data-theme="dark"] .table-wrap th { background: #262b35; }
+html[data-theme="dark"] .understood-btn[aria-pressed="true"] { background: #1f3322; color: #9fd8a3; }
+html[data-theme="dark"] .box { color: var(--ink); }
+html[data-theme="dark"] .box .box { background: var(--paper); }
+html[data-theme="dark"] .box-def, html[data-theme="dark"] .box-summary { --c: #7fb0ec; --b: #1c2635; }
+html[data-theme="dark"] .box-prop, html[data-theme="dark"] .box-quiz { --c: #b9a3f0; --b: #241f33; }
+html[data-theme="dark"] .box-intuition { --c: #5fc4b2; --b: #17282a; }
+html[data-theme="dark"] .box-example { --c: #86c98a; --b: #1a281b; }
+html[data-theme="dark"] .box-pitfall { --c: #e8a54b; --b: #2c2416; }
+html[data-theme="dark"] .box-prereq { --c: #f08a5d; --b: #2d1f18; }
+html[data-theme="dark"] .box-proof, html[data-theme="dark"] .box-orig { --c: #a7b0c0; --b: #1f232b; }
+html[data-theme="dark"] .box-orig .box-body { color: var(--ink); }
+html[data-theme="dark"] .notes strong, html[data-theme="dark"] .prose strong { color: #f5f6f8; }
+html[data-theme="dark"] a:hover { color: #a9cbf3; }
+html[data-theme="dark"] .box-note { --c: #6cb8e6; --b: #172631; }
+html[data-theme="dark"] .box-check { --c: #f08080; --b: #2d1b1d; }
+html[data-theme="dark"] .answer-body, html[data-theme="dark"] details.answer > summary { background: var(--paper); color: var(--ink); }
+html[data-theme="dark"] mark.hl, html[data-theme="dark"] mark.search-hl { background: #5c4a14; color: #fff3c4; }
+html[data-theme="dark"] a { color: var(--accent); }
+html[data-theme="dark"] .fig img, html[data-theme="dark"] .slide-figure img { background: #f7f5ef; border-radius: 6px; }
+html[data-theme="dark"] .widget {
+  --bg: #f6f4ef; --paper: #ffffff; --ink: #1d2433; --ink-2: #4a5263; --muted: #8a90a0; --line: #e3dfd6; --line-2: #d4cec2;
+  --accent: #1f4e8c; color: var(--ink); background: #f6f4ef; border-radius: var(--radius); padding: 6px;
+}
+html[data-theme="dark"] .widget .w-btn { background: #fff; color: var(--ink); }
+html[data-theme="dark"] .widget a { color: var(--accent); }
+
 @media print {
-  .topbar, .sidenav, .pager, .section-tip, .zoom-hint { display: none !important; }
-  .layout { display: block; }
-  .slide-block { grid-template-columns: 38% 1fr; break-inside: avoid-page; }
-  .slide-figure { position: static; }
-  details.answer > .answer-body { display: block; }
+  html[data-theme="dark"] { color-scheme: light; --bg: #fff; --paper: #fff; --ink: #000; --ink-2: #333; --muted: #555; --line: #ccc; --line-2: #bbb; --accent: #1f4e8c; }
+  html { font-size: 11pt; }
+  body { background: #fff; color: #000; }
+  .topbar, .sidenav, .nav-scrim, .pager, .section-tip, .zoom-hint, .slide-fab, .search-panel, .term-pop, .lightbox,
+  .understood-row, .rv-toolbar, .rv-mark, .sh-tools, .skip-link, .read-progress, .progress-card { display: none !important; }
+  .layout, .main { display: block; margin: 0; padding: 0; }
+  .page { max-width: none; padding: 0; }
+  .slide-block { display: block; break-inside: auto; margin: 0 0 1.2em; }
+  .slide-col { display: block !important; }
+  .slide-figure { position: static; width: 62%; margin: 0 auto 0.8em; break-inside: avoid; }
+  .notes { max-width: none; }
+  .box, figure, table, .table-wrap, .rv-item, .sh-item, .sh-sums li { break-inside: avoid; }
+  .sheet-body h3, .rv-sec { break-after: avoid; }
+  h2, h3 { break-after: avoid; }
+  a { color: inherit; text-decoration: none; }
+  .widget .widget-stage { display: none; }
+  .widget::before { content: "（这里是交互图，请在网页上操作）"; display: block; padding: 0.6em; color: #555; border: 1px dashed #bbb; border-radius: 6px; }
+  .focus-mode .slide-col { display: block !important; }
 }

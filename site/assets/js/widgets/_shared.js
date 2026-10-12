@@ -150,6 +150,25 @@ export function svgPoint(svgEl, evt) {
 /** Make an SVG element draggable (mouse + touch). onDrag receives SVG coordinates. */
 export function draggable(svgEl, el, onDrag, onEnd) {
   el.classList.add('w-handle');
+  // Keyboard: Tab to the handle, arrow keys nudge it (Shift = bigger steps).
+  el.setAttribute('tabindex', '0');
+  if (!el.hasAttribute('role')) el.setAttribute('role', 'button');
+  if (!el.hasAttribute('aria-label')) el.setAttribute('aria-label', '可拖动的点：用方向键移动，按住 Shift 移动更快');
+  el.addEventListener('keydown', (e) => {
+    const step = e.shiftKey ? 20 : 4;
+    const d = { ArrowLeft: [-step, 0], ArrowRight: [step, 0], ArrowUp: [0, -step], ArrowDown: [0, step] }[e.key];
+    if (!d) return;
+    e.preventDefault();
+    const m = /translate\(\s*([-\d.]+)[ ,]+([-\d.]+)\s*\)/.exec(el.getAttribute('transform') || '');
+    let at;
+    if (m) at = { x: Number(m[1]), y: Number(m[2]) };
+    else {
+      const b = el.getBBox();
+      at = { x: b.x + b.width / 2, y: b.y + b.height / 2 };
+    }
+    onDrag({ x: at.x + d[0], y: at.y + d[1] });
+    onEnd?.();
+  });
   let frame = 0;
   let last = null;
   el.addEventListener('pointerdown', (e) => {

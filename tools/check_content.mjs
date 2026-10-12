@@ -201,6 +201,9 @@ function checkFile(file, glossaryKeys) {
         if (STRAY_SYMBOLS.test(node.value)) {
           report('warn', file, lineOf(node), `math symbol outside $...$: "${node.value.match(STRAY_SYMBOLS)[0]}" — write it in LaTeX`);
         }
+        if (node.value.includes('**')) {
+          report('error', file, lineOf(node), 'bold not rendered (a "**" next to Chinese punctuation) — use <strong>…</strong> or move the punctuation outside');
+        }
         break;
       }
       default:

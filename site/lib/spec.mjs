@@ -62,6 +62,16 @@ export const WIDGETS = [
   'default-effect',
   'convex-mix',
   'seq-limit',
+  // Lecture 2 and its basics pages (registered up front; unused names are harmless).
+  'budget-line',
+  'demand-explorer',
+  'kkt-corner',
+  'envelope',
+  'hicksian-emp',
+  'slutsky-decomp',
+  'cv-ev',
+  'gradient-field',
+  'quadratic-form',
 ];
 
 // Headings allowed inside a slide file (the page title is h1, the slide title is h2).
@@ -78,4 +88,10 @@ export const BASICS_ANCHORS = {
     'continuity-function', 'countable'],
   convexity: ['convex-combination', 'convex-set', 'upper-contour', 'concave', 'quasi-concave',
     'strict'],
+  calculus: ['derivative', 'partial-derivative', 'chain-rule', 'gradient', 'homogeneous-function',
+    'implicit-function'],
+  'linear-algebra': ['vector', 'matrix', 'matrix-multiplication', 'symmetric-matrix', 'quadratic-form',
+    'definiteness'],
+  optimization: ['extremum', 'first-order-condition', 'second-order-condition', 'lagrange-method', 'kkt',
+    'envelope'],
 };

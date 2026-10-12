@@ -48,6 +48,43 @@ lectures:
     reading_pdf: readings/reading2_consumer_theory.pdf
     n_slides: 55
     status: planned
+    sections:
+      - id: budget
+        title_zh: "消费者问题与预算集"
+        intro: "消费者要在买得起的组合里挑最好的：预算集长什么样，价格和收入变了它怎么变。"
+        slides: [1, 2, 3, 4, 5]
+      - id: marshallian
+        title_zh: "马歇尔需求及其性质"
+        intro: "给定价格和收入的最优购买组合：它存在吗、唯一吗？价格和收入同比例变化会怎样？钱会不会花光？"
+        slides: [6, 7, 8, 9, 10, 11, 12]
+      - id: indirect
+        title_zh: "间接效用函数"
+        intro: "把“最多能达到多少效用”看成价格和收入的函数：它有哪些性质，为什么。"
+        slides: [13, 14, 15, 16]
+      - id: kuhn-tucker
+        title_zh: "拉格朗日方法与库恩–塔克条件"
+        intro: "用拉格朗日乘子求最优解；最优解落在边界（某样东西一点不买）时怎么办：库恩–塔克条件。"
+        slides: [17, 18, 19, 20, 21]
+      - id: envelope
+        title_zh: "包络定理与罗伊恒等式"
+        intro: "参数变化时最优值怎样变：包络定理；乘子就是“钱的边际效用”；从间接效用函数直接读出需求。"
+        slides: [22, 23, 24, 25]
+      - id: hicksian
+        title_zh: "支出最小化与希克斯需求"
+        intro: "反过来问：要达到某个效用水平，最少要花多少钱？希克斯需求、支出函数与谢泼德引理。"
+        slides: [26, 27, 28, 29, 30, 31]
+      - id: comparative
+        title_zh: "比较静态：需求定律与替代矩阵"
+        intro: "价格变化时需求怎样变：补偿需求定律，替代矩阵为什么对称、半负定。"
+        slides: [32, 33, 34, 35, 36, 37, 38]
+      - id: slutsky
+        title_zh: "对偶关系与斯卢茨基方程"
+        intro: "两种需求、两种值函数怎样互相转换；把价格变化的影响拆成替代效应和收入效应。"
+        slides: [39, 40, 41, 42, 43, 44, 45, 46]
+      - id: welfare
+        title_zh: "价格变化的福利度量"
+        intro: "涨价让人损失了多少？补偿变化、等价变化、消费者剩余，以及它们在图上的含义。"
+        slides: [47, 48, 49, 50, 51, 52, 53, 54, 55]
 
   - id: lecture3
     no: 3
@@ -67,3 +104,10 @@ basics:
     title_zh: "序列、极限与连续"
   - id: convexity
     title_zh: "凸集、凸组合与拟凹函数"
+  # 第 2 讲要用的三页（锚点已在 site/lib/spec.mjs 固定），写好后取消注释：
+  # - id: calculus
+  #   title_zh: "导数、偏导数与齐次函数"
+  # - id: linear-algebra
+  #   title_zh: "向量、矩阵与二次型"
+  # - id: optimization
+  #   title_zh: "最优化基础：一阶条件、拉格朗日与库恩–塔克"

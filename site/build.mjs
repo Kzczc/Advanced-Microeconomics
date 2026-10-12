@@ -23,7 +23,7 @@ import rehypeRaw from 'rehype-raw';
 import rehypeKatex from 'rehype-katex';
 import rehypeStringify from 'rehype-stringify';
 import { katexDistDir } from './lib/katex.mjs';
-import { visit } from 'unist-util-visit';
+import { visit, SKIP } from 'unist-util-visit';
 import { toString as hastToString } from 'hast-util-to-string';
 import {
   BASICS_ANCHORS, BOXES, INNER_CONTAINERS, KATEX_MACROS, WIDGETS,
@@ -33,6 +33,7 @@ const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const CONTENT = path.join(ROOT, 'content');
 const DIST = process.env.AM_DIST ? path.resolve(process.env.AM_DIST) : path.join(ROOT, 'dist');
 const SITE_NAME = '高级微观经济学 · 逐页精讲';
+const SITE_URL = 'https://kzczc.github.io/Advanced-Microeconomics/';
 
 const problems = [];
 const report = (level, where, msg) => problems.push({ level, where, msg });
@@ -272,6 +273,19 @@ function rehypeCaptureText(ctx) {
   };
 }
 
+// Copy every quiz out of each page for the per-lecture review page.
+const boxStringifier = unified().use(rehypeStringify);
+function rehypeCollectBoxes(ctx) {
+  return (tree) => {
+    ctx.collected = { quiz: [] };
+    visit(tree, 'element', (node) => {
+      if (node.tagName !== 'aside' || !node.properties?.className?.includes('box-quiz')) return undefined;
+      ctx.collected.quiz.push(boxStringifier.stringify({ type: 'root', children: [structuredClone(node)] }));
+      return SKIP;
+    });
+  };
+}
+
 async function renderMarkdown(md, ctx) {
   ctx.figNo ??= 0;
   ctx.widgetNo ??= 0;
@@ -288,12 +302,14 @@ async function renderMarkdown(md, ctx) {
     .use(rehypeTables)
     .use(rehypeCaptureText, ctx)
     .use(rehypeKatex, {
-      macros: { ...KATEX_MACROS }, strict: 'ignore', throwOnError: false, errorColor: '#b91c1c',
+      // HTML only: the MathML copy is ~40% of all DOM nodes on long pages and slows scrolling.
+      output: 'html', macros: { ...KATEX_MACROS }, strict: 'ignore', throwOnError: false, errorColor: '#b91c1c',
     })
+    .use(rehypeCollectBoxes, ctx)
     .use(rehypeStringify)
     .process(md);
   for (const msg of file.messages) report('error', ctx.where, `KaTeX: ${msg.reason}`);
-  return { html: String(file), text: ctx.text, headings: ctx.headings };
+  return { html: String(file), text: ctx.text, headings: ctx.headings, collected: ctx.collected };
 }
 
 async function renderInline(md, ctx) {
@@ -339,6 +355,7 @@ const ICON = {
   close: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg>',
   focus: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 5h7v14H4zM13 5h7v14h-7z"/></svg>',
   check: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="m5 12.5 4.5 4.5L19 7.5"/></svg>',
+  moon: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 14.5A8 8 0 1 1 9.5 4a6.5 6.5 0 0 0 10.5 10.5z"/></svg>',
 };
 
 // Key used by site.js to remember which pages the reader has marked as understood.
@@ -373,6 +390,10 @@ function sideNav(rel, cur, slideMeta) {
       }
       out.push('</li>');
     }
+    for (const [kind, file, label] of [['review', 'review', '自测汇总（错题本）'], ['sheet', 'sheet', '定义与命题速查']]) {
+      const here = cur.kind === kind && open;
+      out.push(`<li class="nav-extra"><a class="nav-link${here ? ' is-current' : ''}" href="${rel}${lec.id}/${file}.html">${label}</a></li>`);
+    }
     out.push('</ul></div>');
   }
   out.push('<div class="nav-group nav-tools"><div class="nav-lecture">补课与速查</div><ul class="nav-list">');
@@ -397,11 +418,20 @@ function layout({ title, rel, crumbs = [], nav, main, bodyClass = '', descriptio
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>${esc(title)}</title>
 <meta name="description" content="${esc(description || SITE_NAME)}">
+<link rel="canonical" href="__PAGE_URL__">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="${esc(SITE_NAME)}">
+<meta property="og:title" content="${esc(title)}">
+<meta property="og:description" content="${esc(description || SITE_NAME)}">
+<meta property="og:url" content="__PAGE_URL__">
+<meta property="og:image" content="${SITE_URL}assets/img/og-cover.png">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="theme-color" content="#1f4e8c">
 <link rel="icon" href="${rel}assets/img/favicon.svg" type="image/svg+xml">
 <link rel="stylesheet" href="${rel}assets/katex/katex.min.css">
 <link rel="stylesheet" href="${rel}assets/css/site.css">
 <link rel="stylesheet" href="${rel}assets/css/widgets.css">
-<script>try{var s=localStorage.getItem('am-font-scale');if(s)document.documentElement.style.setProperty('--font-scale',s);if(localStorage.getItem('am-layout')==='focus')document.documentElement.classList.add('focus-mode')}catch(e){}</script>
+<script>try{var d=document.documentElement,s=localStorage.getItem('am-font-scale');if(s)d.style.setProperty('--font-scale',s);if(localStorage.getItem('am-layout')==='focus')d.classList.add('focus-mode');if(localStorage.getItem('am-theme')==='dark')d.dataset.theme='dark'}catch(e){}</script>
 <script type="module" src="${rel}assets/js/site.js"></script>
 </head>
 <body class="${bodyClass}" data-rel="${rel}">
@@ -414,6 +444,7 @@ function layout({ title, rel, crumbs = [], nav, main, bodyClass = '', descriptio
     <div class="tools">
       <button class="tool-btn search-open" type="button" aria-label="搜索">${ICON.search}<span>搜索</span><kbd>/</kbd></button>
       <button class="tool-btn focus-toggle" type="button" aria-pressed="false" title="隐藏左边的课件，只看讲解；课件可用右下角按钮随时打开">${ICON.focus}<span>专注阅读</span></button>
+      <button class="tool-btn theme-toggle" type="button" aria-pressed="false" title="夜间模式：深色背景，晚上看更护眼">${ICON.moon}<span>夜间</span></button>
       <div class="font-tools" role="group" aria-label="字号">
         <button class="tool-btn" type="button" data-font="-1" aria-label="缩小字号">A−</button>
         <button class="tool-btn" type="button" data-font="1" aria-label="放大字号">A+</button>
@@ -456,10 +487,13 @@ function pager(prev, next) {
   return `<nav class="pager" aria-label="翻页">${side(prev, 'is-prev', '← 上一部分')}${side(next, 'is-next', '下一部分 →')}</nav>`;
 }
 
+const builtPages = [];
 function writePage(outPath, html) {
   const file = path.join(DIST, outPath);
   mkdirSync(path.dirname(file), { recursive: true });
-  writeFileSync(file, html);
+  const url = SITE_URL + outPath.replace(/(^|\/)index\.html$/, '$1');
+  builtPages.push(url);
+  writeFileSync(file, html.replaceAll('__PAGE_URL__', url));
 }
 
 // ---------------------------------------------------------------------------
@@ -500,6 +534,7 @@ async function main() {
   // ---- Section pages -------------------------------------------------------
   for (const lec of lectures.filter((l) => l.status === 'ready')) {
     const sections = lec.sections;
+    const review = { quiz: [] };
     for (const sec of sections) {
       const outPath = `${lec.id}/${sec.id}.html`;
       const rel = relFor(outPath);
@@ -521,6 +556,8 @@ async function main() {
           const r = await renderMarkdown(meta.body, ctx);
           counters.figNo = ctx.figNo;
           counters.widgetNo = ctx.widgetNo;
+          const src = { sec, n, title: meta.title_zh, link: `${sec.id}.html#${pid(n)}` };
+          r.collected.quiz.forEach((html, i) => review.quiz.push({ ...src, i, html }));
           // "本页小标题": one chip per ### heading of this page.
           const chips = [...r.html.matchAll(/<h3 id="([^"]+)">([\s\S]*?)<\/h3>/g)]
             .map(([, id, inner]) => `<a href="#${id}">${inner}</a>`).join('');
@@ -608,6 +645,100 @@ ${pager(prev, next)}
       }));
     }
 
+    // ---- Review pages: every quiz (self-marking) and every definition / proposition ----
+    const groupBySection = (items) => sections
+      .map((sec) => ({ sec, own: items.filter((it) => it.sec === sec) }))
+      .filter((g) => g.own.length);
+    const srcLink = (it) => `<a class="rv-src" href="${it.link}">第 ${it.n} 页 · ${esc(it.title)}</a>`;
+    {
+      const outPath = `${lec.id}/review.html`;
+      const rel = relFor(outPath);
+      let order = 0;
+      const groups = groupBySection(review.quiz).map(({ sec, own }) => `<section class="rv-group">
+<h2 class="rv-sec">${sec.index + 1}. ${esc(sec.title_zh)}</h2>
+${own.map((it) => `<div class="rv-item" data-key="${lec.id}/${pid(it.n)}/${it.i}" data-order="${order++}">
+<div class="rv-meta">${srcLink(it)}</div>
+${it.html}
+<div class="rv-mark" role="group" aria-label="标记这道题"><button type="button" class="w-btn rv-btn" data-mark="ok" aria-pressed="false">会了</button><button type="button" class="w-btn rv-btn" data-mark="bad" aria-pressed="false">还不会</button></div>
+</div>`).join('\n')}
+</section>`).join('\n');
+      writePage(outPath, layout({
+        title: `自测汇总 · 第 ${lec.no} 讲 · ${SITE_NAME}`,
+        rel,
+        crumbs: [{ text: `第 ${lec.no} 讲`, href: 'index.html' }, { text: '自测汇总' }],
+        nav: sideNav(rel, { kind: 'review', lecture: lec.id }, slideMeta),
+        main: `<div class="page page-article page-review">
+<header class="article-head"><div class="kicker">第 ${lec.no} 讲 · 复习</div><h1>自测汇总（错题本）</h1>
+<p class="article-en">本讲全部 ${review.quiz.length} 道自测题，按页码排列。先自己想，再点开答案；做完标一下“会了”或“还不会”。标记只存在你自己的浏览器里，可以在首页导出、导入。</p></header>
+<div class="rv-toolbar">
+  <div class="w-seg" role="group" aria-label="筛选">
+    <button type="button" class="w-btn" data-filter="all" aria-pressed="true">全部</button>
+    <button type="button" class="w-btn" data-filter="bad" aria-pressed="false">还不会</button>
+    <button type="button" class="w-btn" data-filter="none" aria-pressed="false">还没标记</button>
+    <button type="button" class="w-btn" data-filter="ok" aria-pressed="false">会了</button>
+  </div>
+  <button type="button" class="w-btn rv-shuffle">打乱顺序</button>
+  <button type="button" class="w-btn rv-sorted" hidden>恢复页码顺序</button>
+  <span class="rv-count" aria-live="polite"></span>
+</div>
+<div class="rv-list">${groups}</div>
+<p class="rv-empty" hidden>这个筛选下没有题目。</p>
+${pager({ href: 'index.html', text: `第 ${lec.no} 讲导读` }, { href: 'sheet.html', text: '定义与命题速查' })}
+</div>`,
+        bodyClass: 'is-article is-review',
+        description: `第 ${lec.no} 讲全部自测题：可以标记“会了 / 还不会”，按标记筛选、打乱顺序。`,
+      }));
+    }
+    {
+      // Hand-written list of definitions and propositions (content/<lecture>/sheet.md),
+      // followed by every page's one-line summary from its front matter.
+      const outPath = `${lec.id}/sheet.html`;
+      const rel = relFor(outPath);
+      const where = `content/${lec.id}/sheet.md`;
+      let body = '';
+      let headings = [];
+      if (existsSync(path.join(ROOT, where))) {
+        const r = await renderMarkdown(matter(readText(where)).content, { rel, lecture: lec.id, where, glossary, idPrefix: 'sh' });
+        body = r.html;
+        headings = r.headings.filter((h) => h.depth === 2);
+        search.push({ t: `第 ${lec.no} 讲 · 定义与命题速查`, e: '', s: '复习', u: outPath, x: r.text.slice(0, 6000) });
+      } else {
+        report('warn', where, 'missing — the sheet page only lists the one-line summaries');
+      }
+      const oneLiners = [];
+      for (const sec of sections) {
+        const items = [];
+        for (const n of sec.slides) {
+          const m = slideMeta.get(`${lec.id}/${n}`);
+          if (!m?.summary) continue;
+          const text = await renderInline(m.summary, { rel, lecture: lec.id, where: `content/${lec.id}/${pid(n)}.md`, glossary });
+          items.push(`<li><a class="rv-src" href="${sec.id}.html#${pid(n)}">第 ${n} 页 · ${esc(m.title_zh)}</a><p>${text}</p></li>`);
+        }
+        if (items.length) oneLiners.push(`<h3 class="rv-sec">${sec.index + 1}. ${esc(sec.title_zh)}</h3>\n<ol class="sh-sums">${items.join('\n')}</ol>`);
+      }
+      const tocItems = [...headings, { id: 'one-liners', text: '每页一句话' }];
+      const toc = `<nav class="page-toc" aria-label="本页目录"><div class="page-toc-title">本页目录</div><ol>${tocItems.map((h) => `<li><a href="#${h.id}">${esc(h.text)}</a></li>`).join('')}</ol></nav>`;
+      const groups = `<div class="prose sheet-body">${body}</div>
+<h2 class="sh-oneliners" id="one-liners">每页一句话</h2>
+${oneLiners.join('\n')}`;
+      writePage(outPath, layout({
+        title: `定义与命题速查 · 第 ${lec.no} 讲 · ${SITE_NAME}`,
+        rel,
+        crumbs: [{ text: `第 ${lec.no} 讲`, href: 'index.html' }, { text: '定义与命题速查' }],
+        nav: sideNav(rel, { kind: 'sheet', lecture: lec.id }, slideMeta),
+        main: `<div class="page page-article page-sheet">
+<header class="article-head"><div class="kicker">第 ${lec.no} 讲 · 复习</div><h1>定义与命题速查</h1>
+<p class="article-en">本讲的定义、命题和关键概念，每条配课件原文、中文意思和例子；最后是每页一句话总结。点“第几页”可以回到原页看完整讲解。</p></header>
+<p class="sh-tools"><button type="button" class="w-btn sh-print">打印 / 存为 PDF</button></p>
+${toc}
+${groups}
+${pager({ href: 'review.html', text: '自测汇总' }, { href: 'index.html', text: `第 ${lec.no} 讲导读` })}
+</div>`,
+        bodyClass: 'is-article is-sheet',
+        description: `第 ${lec.no} 讲全部定义与命题的速查表，可以打印。`,
+      }));
+    }
+
     // ---- Lecture overview --------------------------------------------------
     const outPath = `${lec.id}/index.html`;
     const rel = relFor(outPath);
@@ -639,6 +770,11 @@ ${pager(prev, next)}
 <div class="prose">${intro}</div>
 <h2 class="cards-title">按部分阅读</h2>
 <div class="sec-cards">${cards}</div>
+<h2 class="cards-title">复习</h2>
+<div class="tool-cards">
+  <section class="tool-card"><h3><a href="review.html">自测汇总（错题本）</a></h3><p>本讲全部自测题集中在一页：标记“会了 / 还不会”，只看没掌握的，或者打乱顺序重做。</p></section>
+  <section class="tool-card"><h3><a href="sheet.html">定义与命题速查</a></h3><p>本讲全部定义、命题和关键概念：课件原文、中文意思、例子各一条，外加每页一句话总结；可以打印或存为 PDF。</p></section>
+</div>
 ${pager({ href: '../index.html', text: '课程首页' }, { href: `${sections[0].id}.html`, text: sections[0].title_zh })}
 </div>`;
     writePage(outPath, layout({
@@ -788,6 +924,12 @@ ${pager(prev, next)}
 <div class="tool-cards">
   <section class="tool-card"><h3>数学基础</h3><ol>${basicsCards}</ol></section>
   <section class="tool-card"><h3>速查</h3><ol><li><a href="symbols.html">符号速查</a></li><li><a href="glossary.html">术语表（中英对照）</a></li></ol></section>
+  <section class="tool-card progress-card"><h3>学习记录</h3>
+    <p>“这一页我看懂了”的进度、自测题的标记、字号和夜间模式设置，都只存在这个浏览器里。换电脑或清理浏览器之前，先导出备份；到新设备上再导入。</p>
+    <p class="progress-actions"><button type="button" class="w-btn progress-export">导出学习记录</button>
+      <label class="w-btn progress-import">导入学习记录<input type="file" accept="application/json,.json" hidden></label></p>
+    <p class="progress-status w-note" aria-live="polite"></p>
+  </section>
 </div>
 </div>`,
       bodyClass: 'is-article is-home',
@@ -804,6 +946,12 @@ ${pager(prev, next)}
 <p>可能是链接写错了，或者这一部分还没上线。</p></header><p><a href="index.html">回到课程首页 →</a></p></div></main></body></html>`);
 
   writeFileSync(path.join(DIST, 'search-index.json'), JSON.stringify(search));
+  writeFileSync(path.join(DIST, 'sitemap.xml'), `<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+${builtPages.map((u) => `  <url><loc>${u}</loc></url>`).join('\n')}
+</urlset>
+`);
+  writeFileSync(path.join(DIST, 'robots.txt'), `User-agent: *\nAllow: /\nSitemap: ${SITE_URL}sitemap.xml\n`);
 
   // ---- Report -------------------------------------------------------------
   const errors = problems.filter((p) => p.level === 'error');

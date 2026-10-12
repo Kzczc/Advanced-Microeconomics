@@ -323,7 +323,12 @@ function runSearch() {
     list.innerHTML = '<li class="search-empty">没有找到。换个说法试试，或者用英文术语搜索。</li>';
     return;
   }
-  list.innerHTML = results.map(({ it }, i) => `<li><a href="${rel}${it.u}"${i === 0 ? ' class="is-active"' : ''}>
+  // Carry the query along (?hl=…) so the target page can highlight the matches.
+  const withHl = (u) => {
+    const [page, hash] = u.split('#');
+    return `${rel}${page}?hl=${encodeURIComponent(q)}${hash ? `#${hash}` : ''}`;
+  };
+  list.innerHTML = results.map(({ it }, i) => `<li><a href="${withHl(it.u)}"${i === 0 ? ' class="is-active"' : ''}>
 <span class="sr-title">${escapeHtml(it.t)}</span>
 <span class="sr-meta">${escapeHtml(it.s)}${it.e ? ` · ${escapeHtml(it.e)}` : ''}</span>
 <span class="sr-snippet">${snippet(it.x || it.t, terms)}</span></a></li>`).join('');
@@ -497,3 +502,198 @@ glFilter?.addEventListener('input', () => {
     li.hidden = Boolean(q) && !li.dataset.filter.includes(q);
   });
 });
+
+// ---------------------------------------------------------------------------
+// Search highlight: a result link carries ?hl=…; mark the matches in the target block
+// ---------------------------------------------------------------------------
+
+const hlQuery = new URLSearchParams(location.search).get('hl');
+if (hlQuery) {
+  const words = hlQuery.toLowerCase().split(/\s+/).filter((w) => w && !/^第?\d+页?$/.test(w));
+  const scope = (location.hash && document.getElementById(decodeURIComponent(location.hash.slice(1)))) || document.querySelector('main');
+  if (words.length && scope) {
+    const walker = document.createTreeWalker(scope, NodeFilter.SHOW_TEXT, {
+      acceptNode: (n) => (n.parentElement?.closest('.katex, script, style, mark, .widget, button, .slide-col')
+        ? NodeFilter.FILTER_REJECT : NodeFilter.FILTER_ACCEPT),
+    });
+    const hits = [];
+    for (let n = walker.nextNode(); n && hits.length < 60; n = walker.nextNode()) {
+      const lower = n.nodeValue.toLowerCase();
+      if (words.some((w) => lower.includes(w))) hits.push(n);
+    }
+    for (const node of hits) {
+      const text = node.nodeValue;
+      const lower = text.toLowerCase();
+      const frag = document.createDocumentFragment();
+      let i = 0;
+      while (i < text.length) {
+        let best = -1;
+        let len = 0;
+        for (const w of words) {
+          const j = lower.indexOf(w, i);
+          if (j !== -1 && (best === -1 || j < best)) { best = j; len = w.length; }
+        }
+        if (best === -1) { frag.append(text.slice(i)); break; }
+        frag.append(text.slice(i, best));
+        const m = document.createElement('mark');
+        m.className = 'search-hl';
+        m.textContent = text.slice(best, best + len);
+        frag.append(m);
+        i = best + len;
+      }
+      node.replaceWith(frag);
+    }
+  }
+}
+
+// ---------------------------------------------------------------------------
+// Night mode
+// ---------------------------------------------------------------------------
+
+const themeBtn = document.querySelector('.theme-toggle');
+function paintTheme() {
+  const dark = document.documentElement.dataset.theme === 'dark';
+  themeBtn?.setAttribute('aria-pressed', String(dark));
+  const label = themeBtn?.querySelector('span');
+  if (label) label.textContent = dark ? '日间' : '夜间';
+}
+themeBtn?.addEventListener('click', () => {
+  const dark = document.documentElement.dataset.theme !== 'dark';
+  if (dark) document.documentElement.dataset.theme = 'dark';
+  else delete document.documentElement.dataset.theme;
+  try { localStorage.setItem('am-theme', dark ? 'dark' : 'light'); } catch { /* private mode */ }
+  paintTheme();
+});
+paintTheme();
+
+// ---------------------------------------------------------------------------
+// Review page: mark quizzes "会了 / 还不会", filter, shuffle
+// ---------------------------------------------------------------------------
+
+const QUIZ_KEY = 'am-quiz';
+const readMarks = () => { try { return JSON.parse(localStorage.getItem(QUIZ_KEY) || '{}'); } catch { return {}; } };
+const rvList = document.querySelector('.rv-list');
+if (rvList) {
+  const items = [...rvList.querySelectorAll('.rv-item')];
+  const groups = [...rvList.querySelectorAll('.rv-group')];
+  const count = document.querySelector('.rv-count');
+  const empty = document.querySelector('.rv-empty');
+  const shuffleBtn = document.querySelector('.rv-shuffle');
+  const sortedBtn = document.querySelector('.rv-sorted');
+  let filter = 'all';
+  const flat = document.createElement('div');
+  flat.className = 'rv-flat';
+
+  const paintMarks = () => {
+    const marks = readMarks();
+    let ok = 0;
+    let bad = 0;
+    let shown = 0;
+    for (const it of items) {
+      const m = marks[it.dataset.key] ?? 'none';
+      if (m === 'ok') ok += 1;
+      if (m === 'bad') bad += 1;
+      it.dataset.mark = m;
+      it.querySelectorAll('.rv-btn').forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.mark === m)));
+      it.hidden = filter !== 'all' && m !== filter;
+      if (!it.hidden) shown += 1;
+    }
+    groups.forEach((g) => { g.hidden = ![...g.querySelectorAll('.rv-item')].some((it) => !it.hidden); });
+    if (empty) empty.hidden = shown > 0;
+    if (count) count.textContent = `共 ${items.length} 题：会了 ${ok}，还不会 ${bad}，还没标记 ${items.length - ok - bad}`;
+  };
+
+  rvList.addEventListener('click', (e) => {
+    const b = e.target.closest('.rv-btn');
+    if (!b) return;
+    const key = b.closest('.rv-item').dataset.key;
+    const marks = readMarks();
+    if (marks[key] === b.dataset.mark) delete marks[key];
+    else marks[key] = b.dataset.mark;
+    try { localStorage.setItem(QUIZ_KEY, JSON.stringify(marks)); } catch { /* private mode */ }
+    paintMarks();
+  });
+  document.querySelectorAll('.rv-toolbar [data-filter]').forEach((b) => b.addEventListener('click', () => {
+    filter = b.dataset.filter;
+    document.querySelectorAll('.rv-toolbar [data-filter]').forEach((x) => x.setAttribute('aria-pressed', String(x === b)));
+    paintMarks();
+  }));
+  shuffleBtn?.addEventListener('click', () => {
+    const order = [...items];
+    for (let i = order.length - 1; i > 0; i -= 1) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [order[i], order[j]] = [order[j], order[i]];
+    }
+    flat.replaceChildren(...order);
+    groups.forEach((g) => { g.style.display = 'none'; });
+    rvList.append(flat);
+    if (sortedBtn) sortedBtn.hidden = false;
+  });
+  sortedBtn?.addEventListener('click', () => {
+    // Put every item back into its own section, in page order.
+    const bySection = new Map(groups.map((g) => [g, []]));
+    for (const it of items) bySection.get(groups[Number(it.dataset.group)])?.push(it);
+    for (const [g, own] of bySection) {
+      own.sort((a, b) => a.dataset.order - b.dataset.order).forEach((it) => g.append(it));
+      g.style.display = '';
+    }
+    flat.remove();
+    sortedBtn.hidden = true;
+    paintMarks();
+  });
+  items.forEach((it) => { it.dataset.group = String(groups.findIndex((g) => g.contains(it))); });
+  paintMarks();
+}
+
+// ---------------------------------------------------------------------------
+// Printing: open every answer so it appears on paper; sheet page print button
+// ---------------------------------------------------------------------------
+
+let openedForPrint = [];
+window.addEventListener('beforeprint', () => {
+  openedForPrint = [...document.querySelectorAll('details:not([open])')];
+  openedForPrint.forEach((d) => { d.open = true; });
+});
+window.addEventListener('afterprint', () => {
+  openedForPrint.forEach((d) => { d.open = false; });
+  openedForPrint = [];
+});
+document.querySelector('.sh-print')?.addEventListener('click', () => window.print());
+
+// ---------------------------------------------------------------------------
+// Home page: export / import everything the site keeps in localStorage
+// ---------------------------------------------------------------------------
+
+const progressCard = document.querySelector('.progress-card');
+if (progressCard) {
+  const statusEl = progressCard.querySelector('.progress-status');
+  const KEYS = ['am-understood', QUIZ_KEY, 'am-font-scale', 'am-layout', 'am-theme'];
+  progressCard.querySelector('.progress-export')?.addEventListener('click', () => {
+    const data = { site: 'advanced-microeconomics', exported: new Date().toISOString(), items: {} };
+    for (const k of KEYS) {
+      const v = localStorage.getItem(k);
+      if (v !== null) data.items[k] = v;
+    }
+    const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = `高微学习记录-${new Date().toISOString().slice(0, 10)}.json`;
+    a.click();
+    URL.revokeObjectURL(a.href);
+    statusEl.textContent = '已导出。把这个文件保存好，换设备时点“导入学习记录”。';
+  });
+  progressCard.querySelector('.progress-import input')?.addEventListener('change', async (e) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    try {
+      const data = JSON.parse(await file.text());
+      if (data.site !== 'advanced-microeconomics' || typeof data.items !== 'object') throw new Error('format');
+      for (const [k, v] of Object.entries(data.items)) if (KEYS.includes(k)) localStorage.setItem(k, v);
+      statusEl.textContent = '导入成功，页面刷新后生效。';
+      setTimeout(() => location.reload(), 900);
+    } catch {
+      statusEl.textContent = '这个文件不是本站导出的学习记录，没有导入。';
+    }
+    e.target.value = '';
+  });
+}
