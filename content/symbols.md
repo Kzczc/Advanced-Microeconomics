@@ -20,6 +20,7 @@
 | $e=(1,\dots,1)$ | 全 1 向量 | 每种商品都是 1 单位的组合；$\alpha e=(\alpha,\dots,\alpha)$ 在 45° 线上 | :go[第 16 页]{to="lecture1#p16"} |
 | $U_\alpha$ | 上等高集 | 函数值至少为 $\alpha$ 的点：$\{x: f(x)\ge\alpha\}$ | :go[第 20 页]{to="lecture1#p20"} |
 | $x^*(S,y)$ | 最优的 $x$ | 在 $y$ 固定、$x$ 只能从 $S$ 里选时，最喜欢的那些 $x$ | :go[第 21 页]{to="lecture1#p21"} |
+| $\hat y$ | $y$ 帽（y hat） | 一个特定的、已经定下来的 $y$（第 21 页里是“已经点好的主菜”），头上的尖帽只是起名字 | :go[第 21 页]{to="lecture1#p21"} |
 | $\bar y$ | $y$ 拔 | 一个特定的（课件里是“最差的”）$y$，上横线只是起名字 | :go[第 22 页]{to="lecture1#p22"} |
 
 ### 集合与逻辑
@@ -30,17 +31,22 @@
 | $x\in A$ | $x$ 属于 $A$ | $x$ 是集合 $A$ 的一个元素 | $2\in\{1,2,3\}$ |
 | $x\notin A$ | $x$ 不属于 $A$ | $x$ 不在 $A$ 里 | $5\notin\{1,2,3\}$ |
 | $A\subseteq B$ | $A$ 包含于 $B$ | $A$ 的每个元素都在 $B$ 里 | $\{1,2\}\subseteq\{1,2,3\}$ |
+| $A\subset B$ | $A$ 包含于 $B$ | 有的书和 $\subseteq$ 一样，有的书专指“真子集”（$A\subseteq B$ 且 $A\neq B$），看书时先查它的约定 | $\{1\}\subset\{1,2\}$ |
 | $\varnothing$ | 空集 | 一个元素都没有的集合 | $C(B)=\varnothing$：什么都选不出来 |
 | $A\cap B$、$A\cup B$ | 交集、并集 | 两者都有的元素；至少一个有的元素 | $\{1,2\}\cap\{2,3\}=\{2\}$ |
+| $A\setminus B$（也写 $A-B$） | $A$ 减 $B$（差集） | 在 $A$ 里、但不在 $B$ 里的元素 | $\{1,2,3\}\setminus\{2\}=\{1,3\}$ |
 | $\{x\in A\mid P(x)\}$ | $A$ 中满足 $P$ 的 $x$ | 竖线读作“使得”，后面写条件 | $\{x\in\R\mid x>0\}$ 是正数 |
 | $\lvert B\rvert$ | $B$ 的元素个数 | 有限集合里有几个元素 | $\lvert\{a,b,c\}\rvert=3$ |
 | $[0,1)$ | 左闭右开区间 | 所有满足 $0\le x<1$ 的实数（含 0，不含 1） | $0.999\in[0,1)$，$1\notin[0,1)$ |
 | $\R$、$\R^n$、$\R^n_+$ | 实数集、$n$ 维空间、非负象限 | 所有实数；$n$ 个实数排成的组；每个分量都 $\ge0$ 的组 | $(2,0.5)\in\R^2_+$ |
+| $\N$、$\mathbb{Q}$ | 正整数集、有理数集 | $\{1,2,3,\dots\}$；能写成两个整数相除 $p/q$ 的数 | $3\in\N$，$\tfrac12\in\mathbb{Q}$，$\sqrt2\notin\mathbb{Q}$ |
 | $X\times Y$ | 笛卡尔积 | 所有有序对 $(x,y)$，$x\in X$、$y\in Y$ | $\{1,2\}\times\{a\}=\{(1,a),(2,a)\}$ |
 | $\forall$ | 对所有 / 任意 | 每一个都满足，没有例外 | $\forall x\in\R,\ x^2\ge0$ |
 | $\exists$ | 存在 | 至少有一个满足 | $\exists x\in\R,\ x^2=4$ |
+| $\neg P$ | 非 $P$ | $P$ 不成立 | $\neg(x>2)$ 就是 $x\le2$ |
 | $\Rightarrow$ | 推出 | 前面成立，后面就一定成立 | $x>2\Rightarrow x>1$ |
-| $\iff$ | 当且仅当 | 两边说的是同一件事，互相推出 | $x+1=3\iff x=2$ |
+| $\Leftarrow$ | 由……推出 | $P\Leftarrow Q$ 就是 $Q\Rightarrow P$。证明“当且仅当”时，常用（$\Rightarrow$）和（$\Leftarrow$）标出正在证哪个方向 | $x>1\Leftarrow x>2$ |
+| $\iff$、$\Leftrightarrow$、$\Longleftrightarrow$ | 当且仅当 | 三种写法意思相同：两边说的是同一件事，互相推出 | $x+1=3\iff x=2$ |
 | $\lvert$ / s.t. | 使得 | 引出条件 | |
 
 ### 序列、距离与向量
@@ -48,9 +54,23 @@
 | 符号 | 怎么读 | 意思 | 第一次出现 |
 |---|---|---|---|
 | $(x_n)$ 或 $\{x_n\}_{n=1}^{\infty}$ | 序列 $x_n$ | 按顺序排的一列：$x_1,x_2,x_3,\dots$ | :go[第 15 页]{to="lecture1#p15"} |
+| $n\mapsto x_n$ | $n$ 映射到 $x_n$ | 把每个 $n$ 对应到 $x_n$ 的规则，是函数的另一种写法；序列就是 $n\mapsto x_n$ | :go[序列与连续]{to="basics/sequences-continuity"} |
 | $x_n\to x$ | $x_n$ 收敛到 $x$ | $n$ 越来越大时，$x_n$ 离 $x$ 要多近有多近 | :go[第 15 页]{to="lecture1#p15"} |
+| $\lim_{n\to\infty}x_n=x$ | $n$ 趋于无穷时 $x_n$ 的极限是 $x$ | 和 $x_n\to x$ 是同一个意思 | :go[序列与连续]{to="basics/sequences-continuity"} |
 | $x\ge y$（向量） | $x$ 大于等于 $y$ | 每一个分量都 $\ge$：$x_k\ge y_k$ 对所有 $k$ | :go[第 19 页]{to="lecture1#p19"} |
 | $x\gg y$ | $x$ 远大于 $y$ | 每一个分量都严格大于：$x_k>y_k$ 对所有 $k$ | :go[第 16 页]{to="lecture1#p16"} |
 | $B_\varepsilon(y)$ | 以 $y$ 为中心、半径 $\varepsilon$ 的球 | 离 $y$ 的距离小于 $\varepsilon$ 的所有点 | :go[第 19 页]{to="lecture1#p19"} |
-| $tx+(1-t)x'$ | 凸组合 | $x$ 和 $x'$ 按比例 $t:(1-t)$ 混合，在两点连线上 | :go[第 19 页]{to="lecture1#p19"} |
+| $tx+(1-t)x'$、$\lambda x+(1-\lambda)y$ | 凸组合 | 两点按比例混合，结果在两点的连线上；比例写成 $t$ 还是 $\lambda$ 都一样 | :go[第 19 页]{to="lecture1#p19"} |
 | $\min\{a,b\}$ | $a$、$b$ 中较小的 | 取两个数里小的那个 | :go[第 20 页]{to="lecture1#p20"} |
+
+### 希腊字母
+
+课件和本站用到的希腊字母只有下面几个。它们和 $x$、$y$ 一样只是名字，习惯上各有常见用途。
+
+| 字母 | 怎么读 | 本站里常见的用途 |
+|---|---|---|
+| $\alpha$ | 阿尔法（alpha） | 一个门槛或一个数，比如上等高集 $U_\alpha$ 里的“至少 $\alpha$”、第 16 页的 $\alpha(x)$ |
+| $\beta$ | 贝塔（beta） | 和 $\alpha$ 并用的“另一个数”，比如第 15 页的 $\alpha<\beta$ |
+| $\lambda$ | 兰姆达（lambda） | 混合比例，取 0 到 1 之间的数：$\lambda x+(1-\lambda)y$ |
+| $\varepsilon$（也写 $\epsilon$） | 艾普西隆（epsilon） | 一个很小的正数，比如“离 $y$ 不到 $\varepsilon$ 的地方” |
+| $\pi$ | 派（pi） | 圆周率 $3.14159\ldots$ |

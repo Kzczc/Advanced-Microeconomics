@@ -99,6 +99,7 @@
   en: Negation
   short: '命题 $P$ 不成立，记作 $\neg P$。否定时“所有”变“存在”、“存在”变“所有”，后面的话也取反。'
   where: basics/sets-logic#quantifiers
+  auto: false
 
 - k: iff
   zh: 当且仅当

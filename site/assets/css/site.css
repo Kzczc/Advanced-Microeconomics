@@ -402,6 +402,7 @@ mark.hl { background: #fdecc8; color: inherit; padding: 0 0.15em; border-radius:
 .table-wrap table { border-collapse: collapse; min-width: 100%; background: #fff; font-size: 0.95em; line-height: 1.7; }
 .table-wrap th, .table-wrap td { border: 1px solid var(--line-2); padding: 0.45em 0.75em; vertical-align: top; }
 .table-wrap th { background: #f3f1ea; font-weight: 700; }
+@media (min-width: 761px) { .table-wrap td > .go:only-child { white-space: nowrap; } }
 
 /* 插图 */
 .fig { width: var(--fig-w, 100%); margin: 1.5em auto; text-align: center; }

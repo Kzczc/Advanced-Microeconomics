@@ -273,6 +273,66 @@ function rehypeCaptureText(ctx) {
   };
 }
 
+// The first mention of each glossary term on a page becomes a hover term, unless a :term link for
+// it came earlier. Longer names win ("拟凹函数" over "凹函数"); `auto: false` in the glossary opts a
+// word out when it is also an everyday word.
+const AUTO_TERM_SKIP_TAGS = new Set(['a', 'button', 'summary', 'code', 'pre', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'th', 'figcaption']);
+const AUTO_TERM_SKIP_CLASSES = ['katex', 'term', 'en', 'box-orig', 'box-head', 'widget'];
+let termMatcher = null;
+function getTermMatcher(glossary) {
+  if (termMatcher) return termMatcher;
+  const byName = new Map();
+  const plainFirst = [...glossary].sort(([, a], [, b]) => Number(a.zh.includes('（')) - Number(b.zh.includes('（')));
+  for (const [k, e] of plainFirst) {
+    const name = e.zh.replace(/（[^）]*）/g, '').trim();
+    if (e.auto === false || name.length < 2 || byName.has(name)) continue;
+    byName.set(name, k);
+  }
+  const names = [...byName.keys()].sort((a, b) => b.length - a.length);
+  const source = names.map((n) => (/^[A-Za-z]+$/.test(n) ? `(?<![A-Za-z])${n}(?![A-Za-z])` : n.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')));
+  termMatcher = { re: new RegExp(source.join('|'), 'g'), byName };
+  return termMatcher;
+}
+function linkTerms(text, { re, byName }, linked) {
+  const parts = [];
+  let last = 0;
+  for (const m of text.matchAll(re)) {
+    const k = byName.get(m[0]);
+    if (linked.has(k)) continue;
+    linked.add(k);
+    if (m.index > last) parts.push({ type: 'text', value: text.slice(last, m.index) });
+    parts.push({ type: 'element', tagName: 'span', properties: { className: ['term'], dataK: k, tabIndex: 0 }, children: [{ type: 'text', value: m[0] }] });
+    last = m.index + m[0].length;
+  }
+  if (!parts.length) return null;
+  if (last < text.length) parts.push({ type: 'text', value: text.slice(last) });
+  return parts;
+}
+function rehypeAutoTerms(ctx) {
+  return (tree) => {
+    if (!ctx.autoTerms) return;
+    const matcher = getTermMatcher(ctx.glossary);
+    const linked = new Set();
+    const walk = (node) => {
+      for (let i = 0; i < node.children.length; i += 1) {
+        const child = node.children[i];
+        if (child.type === 'element') {
+          const cls = child.properties?.className ?? [];
+          if (cls.includes('term')) linked.add(child.properties.dataK);
+          if (!AUTO_TERM_SKIP_TAGS.has(child.tagName) && !AUTO_TERM_SKIP_CLASSES.some((c) => cls.includes(c))) walk(child);
+        } else if (child.type === 'text') {
+          const parts = linkTerms(child.value, matcher, linked);
+          if (parts) {
+            node.children.splice(i, 1, ...parts);
+            i += parts.length - 1;
+          }
+        }
+      }
+    };
+    walk(tree);
+  };
+}
+
 // Copy every quiz out of each page for the per-lecture review page.
 const boxStringifier = unified().use(rehypeStringify);
 function rehypeCollectBoxes(ctx) {
@@ -305,6 +365,7 @@ async function renderMarkdown(md, ctx) {
       // HTML only: the MathML copy is ~40% of all DOM nodes on long pages and slows scrolling.
       output: 'html', macros: { ...KATEX_MACROS }, strict: 'ignore', throwOnError: false, errorColor: '#b91c1c',
     })
+    .use(rehypeAutoTerms, ctx)
     .use(rehypeCollectBoxes, ctx)
     .use(rehypeStringify)
     .process(md);
@@ -313,7 +374,7 @@ async function renderMarkdown(md, ctx) {
 }
 
 async function renderInline(md, ctx) {
-  const { html } = await renderMarkdown(md, { ...ctx, idPrefix: 'x', headCount: 0 });
+  const { html } = await renderMarkdown(md, { ...ctx, idPrefix: 'x', headCount: 0, autoTerms: false });
   return html.replace(/^<p>([\s\S]*)<\/p>\s*$/, '$1');
 }
 
@@ -551,7 +612,7 @@ async function main() {
         let notes;
         if (meta) {
           const ctx = {
-            rel, lecture: lec.id, where, glossary, idPrefix: pid(n), ...counters,
+            rel, lecture: lec.id, where, glossary, idPrefix: pid(n), autoTerms: true, ...counters,
           };
           const r = await renderMarkdown(meta.body, ctx);
           counters.figNo = ctx.figNo;
@@ -698,7 +759,7 @@ ${pager({ href: 'index.html', text: `第 ${lec.no} 讲导读` }, { href: 'sheet.
       let body = '';
       let headings = [];
       if (existsSync(path.join(ROOT, where))) {
-        const r = await renderMarkdown(matter(readText(where)).content, { rel, lecture: lec.id, where, glossary, idPrefix: 'sh' });
+        const r = await renderMarkdown(matter(readText(where)).content, { rel, lecture: lec.id, where, glossary, idPrefix: 'sh', autoTerms: true });
         body = r.html;
         headings = r.headings.filter((h) => h.depth === 2);
         search.push({ t: `第 ${lec.no} 讲 · 定义与命题速查`, e: '', s: '复习', u: outPath, x: r.text.slice(0, 6000) });
@@ -746,7 +807,7 @@ ${pager({ href: 'review.html', text: '自测汇总' }, { href: 'index.html', tex
     let intro = '';
     if (existsSync(path.join(ROOT, where))) {
       const { content } = matter(readText(where));
-      const r = await renderMarkdown(content, { rel, lecture: lec.id, where, glossary, idPrefix: 'ov' });
+      const r = await renderMarkdown(content, { rel, lecture: lec.id, where, glossary, idPrefix: 'ov', autoTerms: true });
       intro = r.html;
       search.push({ t: `第 ${lec.no} 讲导读 · ${lec.title_zh}`, e: lec.title_en, s: '导读', u: outPath, x: r.text.slice(0, 6000) });
     }
@@ -796,7 +857,7 @@ ${pager({ href: '../index.html', text: '课程首页' }, { href: `${sections[0].
     let headings = [];
     if (existsSync(path.join(ROOT, where))) {
       const { content } = matter(readText(where));
-      const r = await renderMarkdown(content, { rel, lecture: 'lecture1', where, glossary, idPrefix: 'b' });
+      const r = await renderMarkdown(content, { rel, lecture: 'lecture1', where, glossary, idPrefix: 'b', autoTerms: true });
       body = r.html;
       headings = r.headings.filter((h) => h.depth === 2);
       const missing = (BASICS_ANCHORS[b.id] ?? []).filter((a) => !headings.some((h) => h.id === a));

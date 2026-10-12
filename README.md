@@ -49,7 +49,8 @@ python3 tools/figures/lecture1/p19-convexity.py   # 只重新生成某一张插�
 - `qa.mjs`：逐页截图，检查横向溢出和脚本报错（桌面、手机两种宽度）；
 - `linkcheck.mjs`：检查 `dist/` 里的全部站内链接和锚点；
 - `features.mjs`：端到端测试错题本、速查页、搜索高亮、夜间模式、学习记录导出等阅读功能；
-- `wtest.mjs`：配合 `tools/widget_preview.html` 给交互图截图。
+- `wtest.mjs`：配合 `tools/widget_preview.html` 给交互图截图；
+- `audit.py`（只需要 Python）：从零基础读者的角度审查内容，列出符号速查没收录的符号、过长的段落、没配图的页、没解释的英文缩写。
 
 写作规范见 `authoring/WRITING.md`，技术规范见 `authoring/SPEC.md`。
 
