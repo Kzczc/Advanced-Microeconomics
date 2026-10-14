@@ -18,7 +18,7 @@
   // Open with: python3 -m http.server (repo root) → /tools/widget_preview.html[?only=name][&opts={"k":1}]
   const names = ['pref-checker', 'choice-rule', 'harp-checker', 'utility-transform', 'lexi-continuity',
     'diagonal-utility', 'upper-contour', 'qc-1d', 'quasilinear', 'separability', 'anchoring',
-    'default-effect', 'convex-mix', 'seq-limit'];
+    'default-effect', 'convex-mix', 'seq-limit', 'warp-cycle', 'jnd', 'assumption-predictions', 'one-over-n'];
   const params = new URLSearchParams(location.search);
   const only = params.get('only');
   const opts = only && params.get('opts') ? JSON.parse(params.get('opts')) : {};

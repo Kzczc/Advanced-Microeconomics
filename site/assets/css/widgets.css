@@ -25,10 +25,15 @@
   background: #fffefb; border: 1px solid var(--line, #e3dfd6); border-radius: 8px;
   user-select: none; -webkit-user-select: none;
 }
-.w-svg text { font-family: inherit; fill: var(--ink, #1d2433); font-size: 14px; }
-.w-svg .w-tick { fill: var(--muted, #8a90a0); font-size: 11.5px; }
-.w-svg .w-axis-label { fill: var(--ink-2, #4a5263); font-size: 14px; }
-.w-svg .w-small { font-size: 12px; fill: var(--ink-2, #4a5263); }
+/* Default colours only where the widget did not set a fill attribute (a stylesheet rule would beat it). */
+.w-svg text { font-family: inherit; font-size: 14px; }
+.w-svg text:not([fill]) { fill: var(--ink, #1d2433); }
+.w-svg .w-tick { font-size: 11.5px; }
+.w-svg .w-tick:not([fill]) { fill: var(--muted, #8a90a0); }
+.w-svg .w-axis-label { font-size: 14px; }
+.w-svg .w-axis-label:not([fill]) { fill: var(--ink-2, #4a5263); }
+.w-svg .w-small { font-size: 12px; }
+.w-svg .w-small:not([fill]) { fill: var(--ink-2, #4a5263); }
 .w-var, .w-svg .w-var { font-style: italic; font-family: "Times New Roman", Times, "Nimbus Roman", serif; }
 
 .w-handle { cursor: grab; touch-action: none; }

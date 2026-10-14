@@ -62,6 +62,10 @@ export const WIDGETS = [
   'default-effect',
   'convex-mix',
   'seq-limit',
+  'warp-cycle',
+  'jnd',
+  'assumption-predictions',
+  'one-over-n',
   // Lecture 2 and its basics pages (registered up front; unused names are harmless).
   'budget-line',
   'demand-explorer',

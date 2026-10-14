@@ -80,6 +80,9 @@ export function mathHtml(str) {
     .replace(/(^|[^A-Za-z<\/])([A-Za-z])(?![A-Za-z>])/g, '$1<i class="w-var">$2</i>');
 }
 
+/** Phone-width stage: draw on a narrower canvas so the text in the SVG does not shrink to nothing. */
+export const isNarrow = (stage) => stage.clientWidth > 0 && stage.clientWidth < 520;
+
 /** An <svg> that scales with its container. */
 export function makeSvg(W, H, label) {
   return s('svg', {
